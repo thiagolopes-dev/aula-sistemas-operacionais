@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 01 — Boas-vindas e o que é um SO | Sistemas Operacionais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/deck.css">
+</head>
+<body data-aula="01" data-total="17">
+<main class="deck">
+
+<section class="slide on"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">./sistemas-operacionais --aula 01</span><span class="caret"></span></div>
+  <h1>Sistemas<br>Operacionais</h1>
+  <div class="rule-amber"></div>
+  <div class="cover-meta">
+    <div>Prof. <b>Thiago Lopes</b></div><div>ADS &middot; Unopar</div><div><b>10.08.2026</b></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">whoami --professor</span></div>
+  <h2>Thiago Lopes</h2>
+  <p class="lede">Desenvolvedor <span class="hl">Full Cycle</span> com mais de 30 projetos reais entregues. CEO da <strong>Daring Tech</strong>, <strong>TGMA</strong> e <strong>LabsDev</strong>.</p>
+  <p class="lede dim">Professor de Análise e Desenvolvimento de Sistemas na Unopar e responsável pelas Relações Institucionais na Ninhotech — Governança de Inovação de Arapongas.</p>
+  <div class="stats">
+    <div class="stat"><b>30+</b><span>projetos entregues</span></div>
+    <div class="stat"><b>3</b><span>empresas fundadas</span></div>
+    <div class="stat"><b>1</b><span>obsessão: código que roda</span></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">ps aux | grep thiago</span></div>
+  <h2>Processos em execução</h2>
+  <table class="ps"><thead><tr><th>PID</th><th>Comando</th><th>Descrição</th></tr></thead><tbody>
+    <tr><td>1024</td><td>daring-tech</td><td>Software sob medida — produto, API e entrega</td></tr>
+    <tr><td>1025</td><td>tgma</td><td>Tecnologia aplicada a operação real</td></tr>
+    <tr><td>1026</td><td>labsdev</td><td>Laboratório de produtos digitais</td></tr>
+    <tr><td>2048</td><td>unopar --ads</td><td>Docência em Análise e Desenvolvimento de Sistemas</td></tr>
+    <tr><td>4096</td><td>ninhotech</td><td>Relações Institucionais — inovação em Arapongas</td></tr>
+  </tbody></table>
+  <p class="lede dim sm" style="margin-top:1.4em">Guarde esse comando. Na <span class="hl">Aula 05</span> ele deixa de ser piada e vira conteúdo.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">cat stack.txt</span></div>
+  <h2>Com o que eu trabalho</h2>
+  <p class="lede">Backend, web e mobile — do banco à interface. Mas todo produto dessa lista termina no mesmo lugar: <span class="hl">um processo rodando em um servidor Linux.</span></p>
+  <div class="chips">
+    <span class="chip">NestJS</span><span class="chip">Node.js</span><span class="chip">Python</span>
+    <span class="chip">Angular</span><span class="chip">Next.js</span><span class="chip">React</span>
+    <span class="chip">TypeScript</span><span class="chip">Flutter</span><span class="chip">React Native</span>
+    <span class="chip off">Docker</span><span class="chip off">Nginx</span><span class="chip off">Linux</span>
+  </div>
+  <p class="lede dim sm" style="margin-top:1.6em">Os três últimos são desta disciplina. Sem eles, os nove primeiros não saem da sua máquina.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">echo $POR_QUE_ESSA_DISCIPLINA</span></div>
+  <p class="big-q">Ninguém é contratado para<br><em>saber o que é um kernel.</em><br>É contratado para colocar<br><em>o sistema no ar</em> — e mantê-lo lá.</p>
+  <p class="lede dim" style="margin-top:1.8em">Eu não dou esta disciplina por teoria. Dou porque uso isso todo dia para manter sistema de cliente funcionando às três da manhã.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">man sistemas-operacionais</span></div>
+  <h2>O que é um Sistema Operacional</h2>
+  <p class="lede">É o software que <span class="hl">gerencia os recursos do hardware</span> e faz a ponte entre o hardware, os programas e você.</p>
+  <p class="lede">Ele decide quem usa o processador agora, quanta memória cada programa recebe, onde os arquivos ficam e quem tem permissão de abri-los. <strong>Tudo isso acontece enquanto você não olha.</strong></p>
+  <div class="grid g3" style="margin-top:clamp(18px,3vh,32px)">
+    <div class="card"><h3>Gerente</h3><p>Distribui CPU, memória e disco entre programas que competem pelos mesmos recursos.</p></div>
+    <div class="card teal"><h3>Tradutor</h3><p>Oferece uma interface única para o programador, escondendo a diferença entre cada hardware.</p></div>
+    <div class="card violet"><h3>Guarda</h3><p>Isola processos, controla permissões e impede que um programa derrube o resto.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">stack --layers</span></div>
+  <h2>Onde o SO fica</h2>
+  <div class="layers">
+    <div class="layer you"><span class="tag">VOCÊ</span><span class="txt">Clica, digita, arrasta. Nunca fala com o hardware.</span></div>
+    <div class="layer"><span class="tag">Aplicações</span><span class="txt">Navegador, editor, sua API. Pedem coisas — não pegam sozinhas.</span></div>
+    <div class="layer"><span class="tag">Shell / Bibliotecas</span><span class="txt">A porta de entrada. É aqui que você vai morar neste semestre.</span></div>
+    <div class="layer kernel"><span class="tag">KERNEL</span><span class="txt">O núcleo. Decide tudo: processos, memória, arquivos, dispositivos.</span></div>
+    <div class="layer hw"><span class="tag">Hardware</span><span class="txt">CPU, RAM, disco, rede. Burro, rápido e sem noção de contexto.</span></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">top --pilares</span></div>
+  <h2>Quatro perguntas, um semestre</h2>
+  <p class="lede dim">Toda a disciplina responde a estas quatro. Se ao final você souber responder, passou.</p>
+  <div class="grid g4" style="margin-top:clamp(18px,3vh,32px)">
+    <div class="card"><h3>Processos</h3><p>Quem usa o processador agora? Por quanto tempo? Quem decide?</p></div>
+    <div class="card teal"><h3>Memória</h3><p>Onde cada programa mora na RAM? O que acontece quando ela acaba?</p></div>
+    <div class="card violet"><h3>Arquivos</h3><p>Como os dados são organizados? Quem pode ler, escrever, executar?</p></div>
+    <div class="card blue"><h3>Dispositivos</h3><p>Como teclado, disco e rede conversam com o sistema sem colidir?</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">ps aux | wc -l</span></div>
+  <p class="big-q">Quantos programas estão<br>rodando <em>agora</em> no celular<br>que está no seu bolso?</p>
+  <p class="lede" style="margin-top:1.8em">Você abriu um. O sistema operacional está segurando <span class="hl">centenas</span> — e nenhum deles sabe que os outros existem.</p>
+  <p class="lede dim">Como? É exatamente isso que vamos desmontar.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">cat ementa.txt</span></div>
+  <h2>O caminho até dezembro</h2>
+  <div class="grid g2" style="margin-top:clamp(14px,2.4vh,24px)">
+    <div class="card"><h3>01 · Fundamentos <span class="dim" style="font-weight:400">Aulas 1–4</span></h3><p>Conceitos, história, kernel, tipos de SO, Linux e Windows. Primeiros comandos no terminal.</p></div>
+    <div class="card teal"><h3>02 · Processos e Threads <span class="dim" style="font-weight:400">Aulas 5–8</span></h3><p>Estados de um processo, escalonamento, comunicação entre processos, threads na prática.</p></div>
+    <div class="card violet"><h3>03 · Arquivos e Permissões <span class="dim" style="font-weight:400">Aulas 9–12</span></h3><p>Estrutura de diretórios, sistemas de arquivos, chmod e chown, shell script.</p></div>
+    <div class="card blue"><h3>04 · Memória e Deploy <span class="dim" style="font-weight:400">Aulas 13–15</span></h3><p>Alocação, swapping, memória virtual — e o sistema de vocês subindo como serviço de verdade.</p></div>
+    <div class="card" style="border-left-color:var(--paper)"><h3 style="color:var(--paper)">05 · Entrega <span class="dim" style="font-weight:400">Aulas 16–17</span></h3><p>Apresentação dos projetos, diagnóstico de falhas e fechamento.</p></div>
+    <div class="card ghost"><h3>Bibliografia base</h3><p>Tanenbaum, <em>Sistemas Operacionais Modernos</em> · Machado &amp; Maia, <em>Arquitetura de Sistemas Operacionais</em> · material da disciplina.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">cal --semestre 2026.2</span></div>
+  <h2>17 segundas-feiras</h2>
+  <div class="cal">
+    <div class="month"><h4>AGOSTO</h4>
+      <div class="day now"><b>10</b><span>AULA 01</span></div><div class="day"><b>17</b><span>AULA 02</span></div>
+      <div class="day"><b>24</b><span>AULA 03</span></div><div class="day"><b>31</b><span>AULA 04</span></div></div>
+    <div class="month"><h4>SETEMBRO</h4>
+      <div class="day off"><b>07</b><span>FERIADO</span></div><div class="day m2"><b>14</b><span>AULA 05</span></div>
+      <div class="day m2"><b>21</b><span>AULA 06</span></div><div class="day m2"><b>28</b><span>AULA 07</span></div></div>
+    <div class="month"><h4>OUTUBRO</h4>
+      <div class="day m2"><b>05</b><span>AULA 08</span></div><div class="day off"><b>12</b><span>FERIADO</span></div>
+      <div class="day m3"><b>19</b><span>AULA 09</span></div><div class="day m3"><b>26</b><span>AULA 10</span></div></div>
+    <div class="month"><h4>NOVEMBRO</h4>
+      <div class="day off"><b>02</b><span>FERIADO</span></div><div class="day m3"><b>09</b><span>AULA 11</span></div>
+      <div class="day m3"><b>16</b><span>AULA 12</span></div><div class="day m4"><b>23</b><span>AULA 13</span></div>
+      <div class="day m4"><b>30</b><span>AULA 14</span></div></div>
+    <div class="month"><h4>DEZEMBRO</h4>
+      <div class="day m4"><b>07</b><span>AULA 15</span></div><div class="day m5"><b>14</b><span>AULA 16</span></div>
+      <div class="day m5"><b>21</b><span>AULA 17</span></div></div>
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--amber)"></i>Fundamentos</span>
+    <span><i style="background:var(--teal)"></i>Processos</span>
+    <span><i style="background:var(--violet)"></i>Arquivos</span>
+    <span><i style="background:var(--blue)"></i>Memória e deploy</span>
+    <span><i style="background:var(--paper)"></i>Entrega</span>
+    <span><i style="background:var(--red)"></i>Feriado nacional</span>
+  </div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">./como-vamos-trabalhar.sh</span></div>
+  <h2>O acordo</h2>
+  <p class="lede">Esta é uma disciplina teórica. Não dá para fugir disso — e nem quero. Mas <span class="hl">toda teoria que eu apresentar vai virar comando no terminal no mesmo dia.</span></p>
+  <ul class="rules">
+    <li><span class="n">01</span><span>Você aprende o conceito. Depois vê o conceito acontecendo na sua própria máquina.</span></li>
+    <li><span class="n">02</span><span>Terminal aberto em toda aula. Não é demonstração minha — é você digitando.</span></li>
+    <li><span class="n">03</span><span>Errar em sala é o objetivo. O sistema quebrar aqui é mais barato que quebrar no cliente.</span></li>
+    <li><span class="n">04</span><span>Toda unidade termina com algo que funciona, não com algo que você decorou.</span></li>
+  </ul>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">ls projeto/</span> <span class="dim">→ Permissão negada</span></div>
+  <p class="big-q">No fim do semestre você vai<br>ter <em>um sistema seu</em> rodando<br>sozinho em um servidor Linux.</p>
+  <p class="lede" style="margin-top:1.8em">Rodando de verdade: como serviço, com usuário próprio, permissões corretas, log e reinício automático. O tipo de coisa que se conta em entrevista.</p>
+  <p class="lede dim">Os detalhes eu abro mais pra frente. Por enquanto só quero que você saiba <span class="hl-t">onde a gente vai chegar.</span></p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">cat combinados.md</span></div>
+  <h2>Combinados</h2>
+  <div class="grid g2" style="margin-top:clamp(14px,2.4vh,24px)">
+    <div class="card"><h3>Presença</h3><p>Aula de 3 horas com intervalo. A parte prática costuma cair na segunda metade — chegar atrasado custa caro.</p></div>
+    <div class="card teal"><h3>Máquina</h3><p>Notebook em toda aula. No próximo encontro todo mundo precisa ter Linux acessível: WSL, máquina virtual ou nativo.</p></div>
+    <div class="card violet"><h3>Dúvida</h3><p>Pergunta na hora. Em terminal, dúvida não resolvida vira erro acumulado três aulas depois.</p></div>
+    <div class="card blue"><h3>Avaliação</h3><p>Prática valendo. Não avalio se você decorou a definição — avalio se o seu sistema sobe e por que ele caiu.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">ls -la ./hoje</span></div>
+  <h2>O resto da aula</h2>
+  <p class="lede">Chega de slide. Vamos abrir o terminal <span class="hl">agora</span> — na aula 1, não na aula 5.</p>
+  <ul class="rules">
+    <li><span class="n">→</span><span>Preparar o ambiente: WSL no Windows ou máquina virtual.</span></li>
+    <li><span class="n">→</span><span>Primeiro contato: <code>pwd</code>, <code>ls</code>, <code>cd</code>, <code>mkdir</code>, <code>whoami</code>.</span></li>
+    <li><span class="n">→</span><span>Entender onde você está: a árvore de diretórios do Linux.</span></li>
+    <li><span class="n">→</span><span>Sair daqui com o ambiente funcionando. Ninguém vai embora travado.</span></li>
+  </ul>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">exit</span><span class="caret"></span></div>
+  <h1 style="font-size:clamp(28px,5.2vw,64px)">Bem-vindos ao<br>semestre.</h1>
+  <div class="rule-amber"></div>
+  <div class="cover-meta">
+    <div>Prof. <b>Thiago Lopes</b></div><div><b>thiagolopesdev.com.br</b></div>
+    <div>Próxima aula · <b>17.08</b> — traga o Linux instalado</div>
+  </div>
+</div></section>
+
+</main>
+<script src="assets/deck.js"></script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistemas Operacionais — 2026.2 — Prof. Thiago Lopes</title>
+<meta name="description" content="Material da disciplina de Sistemas Operacionais — Análise e Desenvolvimento de Sistemas — Unopar. Prof. Thiago Lopes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/deck.css">
+</head>
+<body class="index">
+
+<div class="page">
+
+  <header class="idx-head">
+    <div class="prompt">
+      <span class="usr">aluno@unopar</span><span class="sym">:~$</span>
+      <span class="cmd">ls -la ./sistemas-operacionais</span><span class="caret"></span>
+    </div>
+    <h1>Sistemas<br>Operacionais</h1>
+    <div class="rule-amber"></div>
+    <div class="cover-meta">
+      <div>Prof. <b>Thiago Lopes</b></div>
+      <div>Unopar &middot; ADS</div>
+      <div>Semestre <b>2026.2</b></div>
+      <div><b>17 aulas</b> &middot; 51 horas</div>
+    </div>
+  </header>
+
+  <p class="lede dim" style="margin-bottom:clamp(26px,4.6vh,46px)">
+    Todo o material da disciplina fica aqui. Cada aula é publicada após o encontro presencial —
+    navegue pelos slides com as <span class="hl">setas do teclado</span> ou deslizando no celular.
+  </p>
+
+  <div id="modulos"></div>
+
+  <footer class="idx-foot">
+    <div>Prof. <b>Thiago Lopes</b></div>
+    <div><b>thiagolopesdev.com.br</b></div>
+    <div>Ago &ndash; Dez <b>2026</b></div>
+  </footer>
+
+</div>
+
+<script>
+/* =========================================================
+   CONFIGURAÇÃO DAS AULAS
+   Para publicar uma aula: troque  pub:false  por  pub:true
+   e suba o arquivo aulaXX.html correspondente.
+   ========================================================= */
+var MODULOS = [
+  {
+    n: '01', nome: 'Fundamentos', cls: '', faixa: 'Aulas 1 – 4',
+    aulas: [
+      { id: '01', data: '10.08', pub: true,  tt: 'Boas-vindas e o que é um SO',
+        ds: 'Apresentação, o sistema operacional como gerente de recursos, o acordo da disciplina e o primeiro terminal.' },
+      { id: '02', data: '17.08', pub: false, tt: 'História e tipos de SO',
+        ds: 'Das válvulas ao smartphone. Lote, tempo compartilhado, tempo real, distribuído e embarcado.' },
+      { id: '03', data: '24.08', pub: false, tt: 'Kernel e chamadas de sistema',
+        ds: 'Modo usuário e modo kernel, system calls, arquiteturas monolítica e microkernel. Espiando o /proc.' },
+      { id: '04', data: '31.08', pub: false, tt: 'Linux na prática',
+        ds: 'Distribuições, shell, navegação, pipes, redirecionamentos e gerenciamento de pacotes.' }
+    ]
+  },
+  {
+    n: '02', nome: 'Processos e Threads', cls: 'm2', faixa: 'Aulas 5 – 8',
+    aulas: [
+      { id: '05', data: '14.09', pub: false, tt: 'Processos: PCB e estados',
+        ds: 'O que é um processo, o bloco de controle, os três estados, hierarquia pai e filho, criação e término.' },
+      { id: '06', data: '21.09', pub: false, tt: 'Threads e concorrência',
+        ds: 'Processos leves, threads de usuário e de kernel, o que compartilham e o que não compartilham.' },
+      { id: '07', data: '28.09', pub: false, tt: 'Escalonamento',
+        ds: 'Preempção, quantum, FIFO, SJF, Round Robin e prioridades. Mexendo no escalonador com nice.' },
+      { id: '08', data: '05.10', pub: false, tt: 'Sincronização e deadlock',
+        ds: 'Condição de corrida, região crítica, semáforos, mutex, os quatro pilares do impasse.' }
+    ]
+  },
+  {
+    n: '03', nome: 'Arquivos e Permissões', cls: 'm3', faixa: 'Aulas 9 – 12',
+    aulas: [
+      { id: '09', data: '19.10', pub: false, tt: 'Sistema de arquivos',
+        ds: 'A árvore do Linux, inodes, ext4, montagem de dispositivos, links simbólicos e rígidos.' },
+      { id: '10', data: '26.10', pub: false, tt: 'Permissões: chmod e chown',
+        ds: 'Usuários, grupos, dono, leitura, escrita e execução. Notação octal e simbólica na prática.' },
+      { id: '11', data: '09.11', pub: false, tt: 'Shell Script I',
+        ds: 'Variáveis, entrada de dados, operadores, testes e condições com if, then, else e fi.' },
+      { id: '12', data: '16.11', pub: false, tt: 'Shell Script II',
+        ds: 'Laços for e while, funções, argumentos, arrays e automação de tarefas com cron.' }
+    ]
+  },
+  {
+    n: '04', nome: 'Memória e Deploy', cls: 'm4', faixa: 'Aulas 13 – 15',
+    aulas: [
+      { id: '13', data: '23.11', pub: false, tt: 'Memória + nasce a aplicação',
+        ds: 'Alocação, fragmentação e swapping. E a aplicação do projeto final entra em cena.' },
+      { id: '14', data: '30.11', pub: false, tt: 'Memória virtual + systemd',
+        ds: 'Paginação, segmentação, page fault e thrashing. O sistema vira serviço de verdade.' },
+      { id: '15', data: '07.12', pub: false, tt: 'Deploy completo',
+        ds: 'Usuário de serviço, permissões do banco, journalctl, reinício automático e limite de memória.' }
+    ]
+  },
+  {
+    n: '05', nome: 'Entrega', cls: 'm5', faixa: 'Aulas 16 – 17',
+    aulas: [
+      { id: '16', data: '14.12', pub: false, tt: 'Apresentação dos projetos',
+        ds: 'Cada aluno mostra o sistema no ar e responde por cada decisão tomada na máquina.' },
+      { id: '17', data: '21.12', pub: false, tt: 'Diagnóstico e fechamento',
+        ds: 'Quebrando o sistema de propósito, lendo o log, encontrando a causa. Revisão geral do semestre.' }
+    ]
+  }
+];
+
+var alvo = document.getElementById('modulos');
+var html = '';
+
+MODULOS.forEach(function (m) {
+  html += '<section class="mod ' + m.cls + '">';
+  html += '<div class="mod-h"><span class="num">' + m.n + '</span>' +
+          '<span class="nm">' + m.nome + '</span>' +
+          '<span class="rg">' + m.faixa + '</span></div>';
+  html += '<div class="aulas">';
+  m.aulas.forEach(function (a) {
+    var href = a.pub ? 'aula' + a.id + '.html' : '#';
+    var cls  = a.pub ? 'aula' : 'aula locked';
+    var meta = a.pub ? '<span class="dt">' + a.data + '</span>'
+                     : '<span class="lock">Em breve</span>';
+    html += '<a class="' + cls + '" href="' + href + '"' + (a.pub ? '' : ' tabindex="-1" aria-disabled="true"') + '>' +
+              '<div class="top"><span class="id">AULA ' + a.id + '</span>' + meta + '</div>' +
+              '<div class="tt">' + a.tt + '</div>' +
+              '<div class="ds">' + a.ds + '</div>' +
+            '</a>';
+  });
+  html += '</div></section>';
+});
+
+alvo.innerHTML = html;
+</script>
+
+</body>
+</html>
