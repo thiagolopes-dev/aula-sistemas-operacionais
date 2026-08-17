@@ -1,102 +1,150 @@
-# Sistemas Operacionais — 2026.2
+<div align="center">
 
-Material da disciplina de Sistemas Operacionais do curso de Análise e Desenvolvimento de Sistemas.
+# Sistemas Operacionais
 
-**Prof. Thiago Lopes** · Unopar · [thiagolopesdev.com.br](https://thiagolopesdev.com.br)
+**Análise e Desenvolvimento de Sistemas** · Unopar · 2026.2
 
----
+*Prof. Thiago Lopes*
 
-## Estrutura
+<br>
 
-```
-.
-├── index.html          ← menu principal
-├── assets/
-│   ├── deck.css        ← estilo compartilhado
-│   └── deck.js         ← navegação compartilhada
-├── aula01.html ... aula17.html
-└── README.md
-```
+[![Acessar o material](https://img.shields.io/badge/📚_ACESSAR_O_MATERIAL-FFB000?style=for-the-badge&logoColor=15121A)](https://SEU-USUARIO.github.io/so2026/)
 
-Os arquivos `assets/` são compartilhados por todos os decks. Alterar uma cor
-ou um espaçamento ali muda as 17 aulas de uma vez.
+<br>
+
+`17 aulas` · `51 horas` · `Segundas-feiras` · `Agosto a Dezembro`
+
+</div>
 
 ---
 
-## Publicando uma aula
+## Sobre a disciplina
 
-Cada aula fica **oculta** no menu até ser liberada.
+Sistemas Operacionais tem fama de ser uma disciplina teórica. Ela é — não dá para fugir de kernel, escalonamento e memória virtual, e nem queremos.
 
-1. Suba o `aulaXX.html` da semana.
-2. Abra o `index.html` e localize a linha da aula dentro de `var MODULOS`.
-3. Troque `pub: false` por `pub: true`.
-4. Faça commit dos dois arquivos.
+Mas aqui existe um acordo: **toda teoria apresentada vira comando no terminal no mesmo dia.** Você não vai apenas estudar o que é um processo. Vai listar os seus, mudar a prioridade deles, matá-los e vê-los renascer.
 
-```js
-{ id: '02', data: '17.08', pub: true, tt: 'História e tipos de SO',
-  ds: 'Das válvulas ao smartphone...' },
-```
+No fim do semestre você terá **uma aplicação sua rodando sozinha em um servidor Linux** — como serviço de verdade, com usuário próprio, permissões corretas, log estruturado e reinício automático.
 
-Só isso. O card sai de "Em breve" e vira link clicável.
+O tipo de coisa que se conta em entrevista de emprego.
 
 ---
 
-## Publicando no GitHub Pages
+## Como usar o material
 
-1. Crie o repositório e envie os arquivos.
-2. Em **Settings → Pages**, selecione a branch `main` e a pasta `/ (root)`.
-3. O site fica disponível em `https://SEU-USUARIO.github.io/NOME-DO-REPO/`.
-
-Todos os caminhos são relativos, então funciona em qualquer subpasta.
-
----
-
-## Navegação nos decks
+Cada aula é uma apresentação que abre direto no navegador. Nada para instalar.
 
 | Ação | Atalho |
-|---|---|
-| Próximo slide | `→` · `Espaço` · `PageDown` · deslizar |
-| Slide anterior | `←` · `PageUp` |
-| Primeiro / último | `Home` / `End` |
-| Tela cheia | `F` ou o botão na barra |
+|:--|:--|
+| Avançar | `→` · `Espaço` · deslizar para o lado |
+| Voltar | `←` |
+| Início / fim | `Home` / `End` |
+| Tela cheia | `F` |
 | Voltar ao menu | `Esc` |
 
-Cada slide tem endereço próprio: `aula05.html#7` abre direto no slide 7.
-Útil para retomar a aula depois do intervalo.
+Cada slide tem endereço próprio. Se você precisar mandar um trecho específico para um colega, é só copiar a URL — `aula05.html#7` abre direto no slide 7.
+
+Precisa estudar offline? Abra qualquer aula e use `Ctrl+P` para gerar um PDF com um slide por página.
+
+> As aulas são publicadas **após** cada encontro presencial. O que ainda aparece como *"Em breve"* será liberado no dia.
 
 ---
 
-## Imprimindo em PDF
+## O caminho até dezembro
 
-`Ctrl+P` em qualquer deck gera um PDF com um slide por página — o CSS já tem
-regras de impressão. Serve para o aluno que pede material offline.
+### Módulo 01 · Fundamentos
+`Aulas 1 – 4`
+
+O que é um sistema operacional, de onde ele veio e como conversa com o hardware. Kernel, modo usuário e modo kernel, chamadas de sistema. O terminal deixa de ser assustador.
+
+### Módulo 02 · Processos e Threads
+`Aulas 5 – 8`
+
+O que acontece quando um programa vira processo. Estados, hierarquia, escalonamento. Threads compartilhando memória — e os bugs que só aparecem em produção.
+
+### Módulo 03 · Arquivos e Permissões
+`Aulas 9 – 12`
+
+Onde os dados moram e quem tem direito de tocá-los. Inodes, `chmod`, `chown` e automação com Shell Script.
+
+### Módulo 04 · Memória e Deploy
+`Aulas 13 – 15`
+
+Como a RAM é dividida e por que a memória virtual é a ilusão mais bem construída da computação. E o momento em que a sua aplicação sobe como serviço real.
+
+### Módulo 05 · Entrega
+`Aulas 16 – 17`
+
+Apresentação dos projetos e a última lição: consertar vale mais que construir.
 
 ---
 
-## Programa
+## O que você precisa
 
-| Módulo | Aulas | Conteúdo |
-|---|---|---|
-| 01 · Fundamentos | 1–4 | Conceitos, história, kernel, chamadas de sistema, shell |
-| 02 · Processos e Threads | 5–8 | PCB, estados, threads, escalonamento, sincronização |
-| 03 · Arquivos e Permissões | 9–12 | Inodes, chmod/chown, shell script |
-| 04 · Memória e Deploy | 13–15 | Alocação, memória virtual, systemd, observabilidade |
-| 05 · Entrega | 16–17 | Apresentação, diagnóstico, fechamento |
+**Notebook em todas as aulas.** Não é opcional — metade de cada encontro é você digitando.
 
-**17 encontros · 51 horas · segundas-feiras · agosto a dezembro de 2026**
+**Acesso a um Linux.** Qualquer uma das opções abaixo serve:
 
-Feriados nacionais que caem na segunda: 07/09, 12/10 e 02/11.
+- **Windows** → WSL 2 com Ubuntu *(recomendado — é o mais rápido de configurar)*
+- **macOS** → terminal nativo, com alguns comandos adaptados
+- **Linux** → você já está pronto
+- **Qualquer sistema** → máquina virtual com VirtualBox
+
+Vamos padronizar em **Ubuntu**. Não por ser melhor que as outras distribuições, mas porque assim o problema de um é o problema de todos — e a gente resolve junto em vez de debugar trinta ambientes diferentes.
 
 ---
 
 ## O projeto do semestre
 
-Os alunos colocam uma aplicação Node.js no ar como serviço Linux real:
-usuário dedicado, permissões mínimas, unit file do systemd, log no journal
-e limites de recurso.
+A partir da **Aula 13**, cada aluno coloca uma aplicação Node.js no ar como serviço Linux completo: usuário dedicado, permissões mínimas, unit file do systemd, log no journal e limites de recurso.
 
-O código da aplicação é gerado por IA a partir de um prompt padronizado
-(Aula 13). A camada de sistema operacional é inteiramente executada pelo aluno
-— e é o que vale nota.
+O código da aplicação é gerado por IA, a partir de um prompt padronizado. Isso é proposital — o objetivo da disciplina não é escrever CRUD, é **fazer o sistema rodar e mantê-lo rodando**.
 
-> **IA faz o que roda dentro. Você faz o que faz rodar.**
+<div align="center">
+<br>
+
+### IA faz o que roda dentro.<br>Você faz o que faz rodar.
+
+<br>
+</div>
+
+A avaliação não recai sobre o código gerado. Recai sobre o que você construiu em volta dele — e sobre a sua capacidade de descobrir a causa quando ele parar de funcionar.
+
+---
+
+## Calendário
+
+| | Agosto | Setembro | Outubro | Novembro | Dezembro |
+|:--|:--|:--|:--|:--|:--|
+| | **10** · Aula 01 | ~~07~~ · Feriado | **05** · Aula 08 | ~~02~~ · Feriado | **07** · Aula 15 |
+| | **17** · Aula 02 | **14** · Aula 05 | ~~12~~ · Feriado | **09** · Aula 11 | **14** · Aula 16 |
+| | **24** · Aula 03 | **21** · Aula 06 | **19** · Aula 09 | **16** · Aula 12 | **21** · Aula 17 |
+| | **31** · Aula 04 | **28** · Aula 07 | **26** · Aula 10 | **23** · Aula 13 | |
+| | | | | **30** · Aula 14 | |
+
+---
+
+## Bibliografia
+
+**TANENBAUM, Andrew S.** · *Sistemas Operacionais Modernos*
+**MACHADO, Francis B.; MAIA, Luiz P.** · *Arquitetura de Sistemas Operacionais*
+
+Material complementar de Linux, permissões e Shell Script é disponibilizado ao longo do semestre.
+
+---
+
+<div align="center">
+
+**Prof. Thiago Lopes**
+
+Desenvolvedor Full Cycle · CEO da Daring Tech, TGMA e LabsDev
+Relações Institucionais · Ninhotech — Governança de Inovação de Arapongas
+
+[thiagolopesdev.com.br](https://thiagolopesdev.com.br)
+
+<br>
+
+<sub>Dúvida durante a semana? Traga para a aula seguinte.<br>
+Em terminal, dúvida não resolvida vira erro acumulado três aulas depois.</sub>
+
+</div>
