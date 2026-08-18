@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 02 — História e tipos de SO | Sistemas Operacionais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/deck.css">
+</head>
+<body data-aula="02" data-total="17">
+<main class="deck">
+
+<section class="slide on"><div class="wrap">
+  <div class="modtag">Módulo 01 · Fundamentos</div>
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">history | head</span><span class="caret"></span></div>
+  <h1>História e<br>tipos de SO</h1>
+  <div class="rule-amber"></div>
+  <div class="cover-meta"><div>Aula <b>02</b></div><div><b>17.08.2026</b></div><div>Prof. Thiago Lopes</div></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">cat aula-anterior.md</span></div>
+  <h2>Onde paramos</h2>
+  <p class="lede">O sistema operacional é o <span class="hl">gerente dos recursos</span>: decide quem usa a CPU, quanta memória cada programa recebe, onde os arquivos ficam e quem pode abri-los.</p>
+  <p class="lede">Hoje a pergunta muda: <strong>por que ele passou a existir?</strong> Ninguém acordou um dia e inventou o Linux. Cada peça que você vai estudar neste semestre nasceu para resolver uma dor concreta.</p>
+  <div class="lab"><div class="lab-h">Checagem rápida</div>
+    <p>Todo mundo com Linux acessível? WSL, máquina virtual ou nativo. Quem não conseguiu, senta ao lado de quem conseguiu — resolvemos nos primeiros 15 minutos.</p></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">git log --oneline --reverse</span></div>
+  <h2>Quatro gerações</h2>
+  <table class="ps keep"><thead><tr><th>Período</th><th>Geração</th><th>O que mudou</th></tr></thead><tbody>
+    <tr><td>1945–55</td><td>Válvulas</td><td>Sem sistema operacional. O programador operava a máquina fisicamente, com painéis e cabos.</td></tr>
+    <tr><td>1955–65</td><td>Transistores</td><td>Processamento em lote. Cartões perfurados em fila, um job por vez, sem interação.</td></tr>
+    <tr><td>1965–80</td><td>Circuitos integrados</td><td>Multiprogramação e tempo compartilhado. Vários usuários na mesma máquina. Nasce o UNIX.</td></tr>
+    <tr><td>1980–hoje</td><td>Computador pessoal</td><td>Interface gráfica, redes, mobilidade. O SO vira invisível para o usuário final.</td></tr>
+  </tbody></table>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">echo $PROBLEMA_ORIGINAL</span></div>
+  <p class="big-q">A CPU é rápida.<br>O disco é lento.<br>Enquanto um programa<br>espera o disco, a CPU<br><em>fica parada.</em></p>
+  <p class="lede" style="margin-top:1.6em">Esse desperdício é a origem de quase tudo que vem depois: multiprogramação, escalonamento, troca de contexto, memória virtual.</p>
+  <p class="lede dim">Guarde essa frase. Ela explica as aulas 5 a 8 inteiras.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">man unix --historia</span></div>
+  <h2>A linhagem que importa</h2>
+  <div class="grid g2">
+    <div class="card"><h3>1969 · UNIX</h3><p>Ken Thompson e Dennis Ritchie, nos Bell Labs. Escrito em C, portável entre máquinas — algo inédito na época.</p></div>
+    <div class="card teal"><h3>1983 · Projeto GNU</h3><p>Richard Stallman inicia um sistema livre compatível com UNIX. As ferramentas ficam prontas; falta o núcleo.</p></div>
+    <div class="card violet"><h3>1991 · Kernel Linux</h3><p>Linus Torvalds, estudante finlandês, publica um kernel como hobby. Junta-se às ferramentas GNU e completa o sistema.</p></div>
+    <div class="card blue"><h3>Hoje</h3><p>Linux roda a maior parte dos servidores do mundo, o Android e praticamente toda a nuvem. Inclusive onde o seu projeto vai rodar.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">ls /tipos-de-so</span></div>
+  <h2>Tipos de sistema operacional</h2>
+  <p class="lede dim">A classificação muda conforme o critério. Vamos pelos dois que mais aparecem em prova e em entrevista.</p>
+  <h3 class="sub">Quanto ao número de usuários e tarefas</h3>
+  <div class="grid g3">
+    <div class="card"><h3>Monousuário<br>Monotarefa</h3><p>Um usuário, um programa por vez. MS-DOS é o exemplo clássico.</p></div>
+    <div class="card teal"><h3>Monousuário<br>Multitarefa</h3><p>Um usuário, vários programas simultâneos. Windows e macOS no seu notebook.</p></div>
+    <div class="card violet"><h3>Multiusuário</h3><p>Vários usuários ao mesmo tempo, cada um isolado do outro. É o modelo do Linux servidor.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">ls /tipos-de-so --por-uso</span></div>
+  <h2>Quanto à finalidade</h2>
+  <div class="grid g2">
+    <div class="card"><h3>Lote (batch)</h3><p>Tarefas enfileiradas, executadas sem interação. Ainda vive em processamento bancário noturno e folha de pagamento.</p></div>
+    <div class="card teal"><h3>Tempo compartilhado</h3><p>Cada usuário recebe uma fatia de tempo da CPU. A ilusão de exclusividade que você tem agora.</p></div>
+    <div class="card violet"><h3>Tempo real</h3><p>O prazo é parte do resultado. Responder tarde é o mesmo que errar. Airbag, marca-passo, controle industrial.</p></div>
+    <div class="card blue"><h3>Distribuído</h3><p>Várias máquinas se comportando como uma só. É a base de tudo que hoje chamamos de nuvem.</p></div>
+    <div class="card red"><h3>Embarcado</h3><p>Recursos mínimos, função específica. Roteador, TV, máquina de café, seu carro.</p></div>
+    <div class="card ghost"><h3>Móvel</h3><p>Bateria e conectividade como restrições de primeira classe. Android é Linux; iOS descende do UNIX.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">diff tempo-real critico nao-critico</span></div>
+  <h2>Tempo real crítico e não crítico</h2>
+  <p class="lede">Nem todo prazo tem o mesmo peso. A literatura separa os dois casos, e a diferença cai em prova.</p>
+  <div class="grid g2" style="margin-top:clamp(14px,2.4vh,24px)">
+    <div class="card red"><h3>Crítico (hard)</h3><p>Todos os prazos precisam ser cumpridos. Perder um é falha do sistema, não lentidão.</p><p><strong>Exemplo:</strong> o airbag tem milissegundos para inflar. Atrasar é o mesmo que não funcionar.</p></div>
+    <div class="card teal"><h3>Não crítico (soft)</h3><p>Os prazos são desejáveis, não garantidos. Perder um degrada a qualidade sem quebrar o sistema.</p><p><strong>Exemplo:</strong> uma videochamada que trava por meio segundo. Incomoda, mas ninguém morre.</p></div>
+  </div>
+  <p class="lede dim sm" style="margin-top:1.4em">No escalonamento de tempo real a prioridade costuma ser <span class="hl">estática</span> e não existe fatia de tempo fixa — voltaremos a isso na Aula 07.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">diff linux windows</span></div>
+  <h2>Linux e Windows</h2>
+  <table class="ps keep"><thead><tr><th>Aspecto</th><th>Linux</th><th>Windows</th></tr></thead><tbody>
+    <tr><td>Licença</td><td>Livre, código aberto</td><td>Proprietária, licença paga</td></tr>
+    <tr><td>Kernel</td><td>Monolítico modular</td><td>Híbrido</td></tr>
+    <tr><td>Processos</td><td>Hierarquia pai e filho preservada</td><td>Sem hierarquia persistente entre processos</td></tr>
+    <tr><td>Interface padrão</td><td>Terminal em primeiro lugar</td><td>Gráfica em primeiro lugar</td></tr>
+    <tr><td>Onde domina</td><td>Servidores, nuvem, Android, embarcado</td><td>Desktop corporativo e jogos</td></tr>
+  </tbody></table>
+  <p class="lede dim sm" style="margin-top:1.3em">A linha de processos merece atenção: no Linux, matar o pai mata os filhos. No Windows, não. Isso volta na <span class="hl">Aula 05</span>.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">uname -a &amp;&amp; cat /etc/os-release</span></div>
+  <h2>Laboratório · Identificando o seu SO</h2>
+  <div class="term"><span class="p">aluno@maquina</span><span class="g">:~$</span> <span class="c">uname -a</span>
+<span class="o">Linux maquina 5.15.0-91-generic #101-Ubuntu SMP x86_64 GNU/Linux</span>
+
+<span class="p">aluno@maquina</span><span class="g">:~$</span> <span class="c">cat /etc/os-release</span>
+<span class="o">NAME="Ubuntu"</span>
+<span class="o">VERSION="22.04.3 LTS (Jammy Jellyfish)"</span>
+
+<span class="p">aluno@maquina</span><span class="g">:~$</span> <span class="c">uptime</span>
+<span class="o"> 19:42:07 up 2 days,  3:14,  1 user,  load average: 0.08, 0.12, 0.09</span></div>
+  <p class="lede sm dim" style="margin-top:1.2em">Rode os três. <code>uname -a</code> mostra o kernel, <code>/etc/os-release</code> mostra a distribuição. <span class="hl">São coisas diferentes</span> — e essa distinção é o assunto da próxima aula.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">ls /distribuicoes</span></div>
+  <h2>Distribuição não é sistema</h2>
+  <p class="lede">Uma <span class="hl">distribuição</span> é o kernel Linux embalado com um conjunto de programas, um gerenciador de pacotes e decisões de configuração. O núcleo é o mesmo; a embalagem muda.</p>
+  <div class="grid g4" style="margin-top:clamp(16px,2.8vh,28px)">
+    <div class="card"><h3>Ubuntu / Debian</h3><p>Pacotes <code>.deb</code> e <code>apt</code>. É o que usaremos no semestre.</p></div>
+    <div class="card teal"><h3>Red Hat / Fedora</h3><p>Pacotes <code>.rpm</code> e <code>dnf</code>. Forte no mercado corporativo.</p></div>
+    <div class="card violet"><h3>Arch</h3><p>Minimalista. Você monta tudo — ótimo para aprender, ruim para ter pressa.</p></div>
+    <div class="card blue"><h3>Alpine</h3><p>Poucos megabytes. Padrão em contêineres Docker.</p></div>
+  </div>
+  <p class="lede dim sm" style="margin-top:1.4em">Vamos padronizar em <span class="hl">Ubuntu</span>. Não por ser melhor — por todos terem o mesmo problema no mesmo lugar.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">./pratica.sh</span></div>
+  <h2>Mão na massa</h2>
+  <div class="lab"><div class="lab-h">Roteiro do laboratório</div>
+    <ul class="rules tight" style="margin-top:0">
+      <li><span class="n">01</span><span>Identifique kernel, distribuição e tempo de atividade da sua máquina.</span></li>
+      <li><span class="n">02</span><span>Descubra quantos núcleos de CPU você tem: <code>nproc</code> e <code>lscpu</code>.</span></li>
+      <li><span class="n">03</span><span>Veja a memória disponível com <code>free -h</code>. Anote o número — vamos revisitá-lo na Aula 13.</span></li>
+      <li><span class="n">04</span><span>Compare com o colega ao lado. Kernels diferentes? Distribuições diferentes? Por quê?</span></li>
+    </ul></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">exit</span><span class="caret"></span></div>
+  <h2>Para a próxima</h2>
+  <p class="lede">Na <span class="hl">Aula 03</span> abrimos o kernel: o que é modo usuário e modo kernel, o que é uma chamada de sistema e por que o seu programa <strong>não pode</strong> falar direto com o hardware.</p>
+  <p class="lede dim">Traga a máquina com o Linux funcionando. A partir de agora todo encontro tem terminal aberto.</p>
+  <div class="cover-meta"><div>Prof. <b>Thiago Lopes</b></div><div><b>thiagolopesdev.com.br</b></div><div>Próxima · <b>24.08</b></div></div>
+</div></section>
+
+</main>
+<script src="assets/deck.js"></script>
+</body>
+</html>
