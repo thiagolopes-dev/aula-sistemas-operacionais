@@ -8,7 +8,7 @@
 
 <br>
 
-[![Acessar o material](https://img.shields.io/badge/📚_ACESSAR_O_MATERIAL-FFB000?style=for-the-badge&logoColor=15121A)](https://SEU-USUARIO.github.io/so2026/)
+[![Acessar o material](https://img.shields.io/badge/📚_ACESSAR_O_MATERIAL-FFB000?style=for-the-badge&logoColor=15121A)](https://thiagolopes-dev.github.io/aula-sistemas-operacionais/)
 
 <br>
 

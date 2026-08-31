@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 03 — O kernel e o servidor | Sistemas Operacionais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/deck.css">
+</head>
+<body data-aula="03" data-total="17">
+<main class="deck">
+
+<section class="slide on"><div class="wrap">
+  <div class="modtag">Módulo 01 · Fundamentos</div>
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">ssh aluno@servidor</span><span class="caret"></span></div>
+  <h1>O kernel<br>e o servidor</h1>
+  <div class="rule-amber"></div>
+  <div class="cover-meta"><div>Aula <b>03</b></div><div><b>24.08.2026</b></div><div>Prof. Thiago Lopes</div></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">cat agenda.md</span></div>
+  <h2>Hoje tem duas metades</h2>
+  <div class="grid g2">
+    <div class="card"><h3>Primeira · Como o comando funciona</h3><p>O que acontece de verdade entre você apertar Enter e a resposta aparecer. Kernel, privilégio e chamada de sistema.</p><p class="dim">Uns 40 minutos. É a base do resto do semestre.</p></div>
+    <div class="card teal"><h3>Segunda · O servidor</h3><p>Você recebe acesso a uma máquina Linux que <strong>não é a sua</strong> e que fica ligada 24 horas por dia.</p><p class="dim">O resto da aula. É onde o projeto de vocês vai morar.</p></div>
+  </div>
+  <p class="lede" style="margin-top:clamp(18px,3vh,32px)">A ordem importa: sem entender o que é privilégio, "permissão negada" no servidor vira mistério em vez de diagnóstico.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">ls</span> <span class="dim">← o que acontece aqui?</span></div>
+  <p class="big-q">Você digitou <em>ls</em><br>e apertou Enter.<br>Entre isso e a resposta<br>aconteceram <em>centenas</em><br>de operações.</p>
+  <p class="lede dim" style="margin-top:1.6em">Nenhuma delas foi feita pelo <code>ls</code>. Ele não sabe ler disco. Ninguém em modo usuário sabe.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">man kernel</span></div>
+  <h2>Dois níveis de privilégio</h2>
+  <p class="lede sm">O processador tem um bit que define o que a instrução atual pode fazer. Isso é <span class="hl">hardware</span>, não convenção de software — não dá para burlar por código.</p>
+  <div class="layers" style="margin-top:clamp(14px,2.4vh,26px)">
+    <div class="layer you"><span class="tag">MODO USUÁRIO</span><span class="txt">Onde vivem o seu terminal, o navegador e a sua futura API. Não acessam hardware nem a memória de outro processo.</span></div>
+    <div class="layer kernel"><span class="tag">MODO KERNEL</span><span class="txt">Acesso total: toda a memória, todos os discos, todas as instruções da CPU. Só o núcleo do sistema roda aqui.</span></div>
+  </div>
+  <p class="lede" style="margin-top:clamp(14px,2.4vh,24px)">É essa separação que faz um programa travado derrubar só a si mesmo. E é ela que, em dezembro, vai dizer <span class="hl-r">"permissão negada"</span> quando o seu serviço tentar gravar num arquivo que não é dele.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">syscall --explain</span></div>
+  <h2>Chamada de sistema</h2>
+  <p class="lede">É a <span class="hl">porta oficial</span> entre os dois modos. O único jeito legítimo de um programa pedir alguma coisa ao sistema.</p>
+  <ul class="rules tight">
+    <li><span class="n">01</span><span>O <code>ls</code> pede: "abra este diretório". Ainda em modo usuário.</span></li>
+    <li><span class="n">02</span><span>Uma instrução especial troca para o <span class="hl-t">modo kernel</span>.</span></li>
+    <li><span class="n">03</span><span>O kernel confere: existe? você tem permissão? <span class="dim">← a Aula 10 mora aqui</span></span></li>
+    <li><span class="n">04</span><span>Ele lê o disco de verdade e devolve os dados.</span></li>
+    <li><span class="n">05</span><span>Volta ao modo usuário. O <code>ls</code> só imprime na tela.</span></li>
+  </ul>
+  <p class="lede sm dim" style="margin-top:1.2em">São poucas as syscalls que importam para nós: <code>fork</code> cria processo, <code>exec</code> troca o programa, <code>open</code> e <code>read</code> e <code>write</code> mexem em arquivos, <code>kill</code> envia sinal. Você vai reencontrar todas.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">strace ls</span></div>
+  <h2>Vendo a fronteira</h2>
+  <div class="term compact"><span class="p">aluno@maquina</span><span class="g">:~$</span> <span class="c">sudo apt install strace -y</span>
+<span class="p">aluno@maquina</span><span class="g">:~$</span> <span class="c">strace ls 2&gt;&amp;1 | tail -6</span>
+<span class="o">openat(AT_FDCWD, ".", O_RDONLY|O_DIRECTORY) = 3</span>
+<span class="o">getdents64(3, ...)                          = 168</span>
+<span class="o">close(3)                                    = 0</span>
+<span class="ok">write(1, "Documentos  Downloads  projeto\n", 31) = 31</span>
+<span class="o">exit_group(0)                               = ?</span>
+
+<span class="g"># quantas syscalls um simples "ls" precisa?</span>
+<span class="p">aluno@maquina</span><span class="g">:~$</span> <span class="c">strace -c ls 2&gt;&amp;1 | tail -3</span></div>
+  <div class="lab" style="margin-top:clamp(12px,2vh,20px)"><div class="lab-h">Fixe esta linha</div>
+    <p>O <code>write(1, ...)</code> destacado acima. O número <strong>1</strong> é a saída padrão — o <em>stdout</em>. Em dezembro, quando o log do seu serviço aparecer no <code>journalctl</code>, será por causa exatamente dessa chamada. Guarde.</p></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">clear &amp;&amp; echo "SEGUNDA METADE"</span></div>
+  <p class="big-q">Agora vocês vão entrar<br>numa máquina<br><em>que não é de vocês.</em></p>
+  <p class="lede" style="margin-top:1.8em">Um servidor Linux de verdade, ligado 24 horas por dia, com vários usuários ao mesmo tempo — cada um com o seu espaço e as suas permissões.</p>
+  <p class="lede dim">Todo o projeto do semestre vai acontecer lá. Hoje é o primeiro acesso.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">man ssh</span></div>
+  <h2>SSH — Secure Shell</h2>
+  <p class="lede">É um <span class="hl">shell remoto criptografado</span>. Você digita na sua máquina; o comando executa na outra; a resposta volta pela rede.</p>
+  <div class="layers" style="margin-top:clamp(14px,2.4vh,26px)">
+    <div class="layer you"><span class="tag">SUA MÁQUINA</span><span class="txt">O cliente <code>ssh</code> — um processo comum, em modo usuário, como qualquer outro.</span></div>
+    <div class="layer"><span class="tag">REDE</span><span class="txt">Tudo criptografado. Ninguém no caminho lê o que você digita, nem a resposta.</span></div>
+    <div class="layer kernel"><span class="tag">SERVIDOR</span><span class="txt">O <code>sshd</code> recebe, autentica e cria um <strong>bash só para você</strong>. Esse bash é filho dele.</span></div>
+  </div>
+  <p class="lede sm dim" style="margin-top:1.3em">Repare na consequência: o seu shell remoto é filho do <code>sshd</code>. Quando a conexão cai, o pai encerra a sessão — e leva os filhos junto. Isso vai importar muito na Aula 13.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">ssh aluno01@servidor.exemplo.br</span></div>
+  <h2>O primeiro acesso</h2>
+  <div class="term"><span class="p">aluno@maquina</span><span class="g">:~$</span> <span class="c">ssh aluno01@servidor.exemplo.br</span>
+<span class="g">The authenticity of host '...' can't be established.</span>
+<span class="g">ED25519 key fingerprint is SHA256:xK9d...</span>
+<span class="g">Are you sure you want to continue connecting? </span><span class="c">yes</span>
+<span class="o">aluno01@servidor.exemplo.br's password:</span>
+
+<span class="ok">Welcome to Ubuntu 22.04.3 LTS</span>
+<span class="p">aluno01@servidor</span><span class="g">:~$</span> <span class="c">_</span>
+
+<span class="g"># repare no prompt: mudou. Você não está mais na sua máquina.</span>
+<span class="g"># para sair:</span>
+<span class="p">aluno01@servidor</span><span class="g">:~$</span> <span class="c">exit</span></div>
+  <p class="lede sm dim" style="margin-top:1.1em">A senha não aparece enquanto você digita — nem asteriscos. É comportamento normal, não travamento. Digite e dê Enter.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno01@servidor</span><span class="sym">:~$</span> <span class="cmd">./info.sh</span></div>
+  <h2>Laboratório · A mesma pergunta, duas máquinas</h2>
+  <div class="term"><span class="c">#!/bin/bash</span>
+<span class="g"># info.sh</span>
+<span class="o">echo "Seu nome de usuário é:"</span>
+<span class="o">whoami</span>
+<span class="o">echo "Tempo que o computador está ligado:"</span>
+<span class="o">uptime</span>
+<span class="o">echo "O script está executando do diretório:"</span>
+<span class="o">pwd</span></div>
+  <div class="lab" style="margin-top:clamp(12px,2vh,20px)"><div class="lab-h">Rode nos dois lugares e compare</div>
+    <p><strong>uptime</strong> — quanto tempo cada máquina está ligada? A sua reinicia todo dia. O servidor, não.</p>
+    <p><strong>whoami</strong> — você é a mesma pessoa, mas é o mesmo usuário?</p>
+    <p><strong>pwd</strong> — o seu <code>/home</code> aqui não é o mesmo de lá. São dois mundos.</p>
+  </div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno01@servidor</span><span class="sym">:~$</span> <span class="cmd">who</span></div>
+  <h2>Você não está sozinho</h2>
+  <p class="lede">Lembra do "multiusuário" da aula passada? Deixou de ser slide. <span class="hl">Toda a turma está nessa máquina agora.</span></p>
+  <div class="term"><span class="p">aluno01@servidor</span><span class="g">:~$</span> <span class="c">who</span>
+<span class="o">aluno01  pts/0   2026-08-24 20:12 (189.45.x.x)</span>
+<span class="o">aluno07  pts/1   2026-08-24 20:12 (189.45.x.x)</span>
+<span class="o">aluno19  pts/2   2026-08-24 20:13 (189.45.x.x)</span>
+
+<span class="p">aluno01@servidor</span><span class="g">:~$</span> <span class="c">who | wc -l</span>
+<span class="o">28</span>
+
+<span class="p">aluno01@servidor</span><span class="g">:~$</span> <span class="c">ls /home</span>
+<span class="g"># as pastas dos seus colegas existem. Tente entrar em uma.</span></div>
+  <p class="lede sm" style="margin-top:1.1em">O que aconteceu quando você tentou entrar na pasta do colega? Aquela mensagem é o kernel decidindo, exatamente como vimos na primeira metade da aula.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno01@servidor</span><span class="sym">:~$</span> <span class="cmd">cat regras.md</span></div>
+  <h2>Regras de convivência</h2>
+  <p class="lede sm">É uma máquina compartilhada. O que você faz afeta a turma inteira.</p>
+  <ul class="rules tight">
+    <li><span class="n">01</span><span>Trabalhe <strong>dentro do seu</strong> <code>/home</code>. Não é sugestão de organização — é o único lugar que é seu.</span></li>
+    <li><span class="n">02</span><span>Nada de processo pesado sem avisar. Um laço infinito seu trava o trabalho de trinta pessoas.</span></li>
+    <li><span class="n">03</span><span>Não tente acessar o diretório de outro aluno. A permissão vai impedir — e a tentativa fica registrada no log.</span></li>
+    <li><span class="n">04</span><span>Sempre <code>exit</code> ao terminar. Sessão aberta consome recurso e ocupa lugar.</span></li>
+    <li><span class="n">05</span><span>Quebrou algo? <strong>Avise.</strong> Esconder problema em servidor compartilhado é o pior hábito que existe na profissão.</span></li>
+  </ul>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno01@servidor</span><span class="sym">:~$</span> <span class="cmd">./pratica.sh</span></div>
+  <h2>Mão na massa</h2>
+  <div class="lab"><div class="lab-h">Roteiro do laboratório</div>
+    <ul class="rules tight" style="margin-top:0">
+      <li><span class="n">01</span><span>Instale o <code>strace</code> na <strong>sua</strong> máquina e rode <code>strace -c ls</code>. Quantas syscalls diferentes?</span></li>
+      <li><span class="n">02</span><span>Encontre o <code>write(1, ...)</code> na saída do <code>strace ls</code> e anote o que ele está escrevendo.</span></li>
+      <li><span class="n">03</span><span>Conecte no servidor e troque a sua senha com <code>passwd</code>.</span></li>
+      <li><span class="n">04</span><span>Crie <code>info.sh</code> nos dois lugares, dê <code>chmod +x</code>, execute e compare as três saídas.</span></li>
+      <li><span class="n">05</span><span>Descubra quantos colegas estão conectados agora e há quanto tempo o servidor está ligado.</span></li>
+      <li><span class="n">06</span><span>Tente entrar no <code>/home</code> de outro aluno. Copie a mensagem de erro exata — vamos usá-la na Aula 10.</span></li>
+    </ul></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@unopar</span><span class="sym">:~$</span> <span class="cmd">exit</span><span class="caret"></span></div>
+  <h2>Para a próxima</h2>
+  <p class="lede">Você já sabe entrar no servidor. Na <span class="hl">Aula 04</span> você aprende a se mover dentro dele: a árvore de diretórios, pipes, redirecionamento e instalação de programas.</p>
+  <p class="lede dim">A partir de agora, quase tudo acontece lá. Anote o endereço, o seu usuário e a nova senha — sem isso você não acompanha a próxima aula.</p>
+  <div class="cover-meta"><div>Prof. <b>Thiago Lopes</b></div><div><b>thiagolopesdev.com.br</b></div><div>Próxima · <b>31.08</b></div></div>
+</div></section>
+
+</main>
+<script src="assets/deck.js"></script>
+</body>
+</html>
