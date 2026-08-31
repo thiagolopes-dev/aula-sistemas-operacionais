@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 04 — O primeiro script | Sistemas Operacionais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/deck.css">
+</head>
+<body data-aula="04" data-total="17">
+<main class="deck">
+
+<section class="slide on"><div class="wrap">
+  <div class="modtag" style="color:var(--teal);border-color:rgba(79,201,176,.3)">Módulo 02 · Shell Script</div>
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">#!/bin/bash</span><span class="caret"></span></div>
+  <h1>O primeiro<br>script</h1>
+  <div class="rule-amber" style="background:var(--teal)"></div>
+  <div class="cover-meta"><div>Aula <b>04</b></div><div><b>31.08.2026</b></div><div>Prof. Thiago Lopes</div></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">echo $A_VIRADA</span></div>
+  <p class="big-q">Chega de digitar<br>comando por comando.<br>Hoje vocês começam<br>a <em>programar o sistema.</em></p>
+  <p class="lede" style="margin-top:1.6em">Shell script é a linguagem que já está instalada em <span class="hl">todo servidor Linux do planeta</span>. Não precisa compilar, não precisa instalar nada. Abre o editor e roda.</p>
+  <p class="lede dim">As próximas seis aulas são disso. É o coração prático do semestre.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">nano meuprimeiroscript.sh</span></div>
+  <h2>Anatomia de um script</h2>
+  <div class="term"><span class="c">#!/bin/bash</span>
+
+<span class="g"># Isto é um comentário</span>
+
+<span class="g"># exibe_mensagem</span>
+<span class="o">echo "Sou uma mensagem"</span>
+
+<span class="g"># Variavel</span>
+<span class="o">nome="Meu nome é Thiago"</span>
+<span class="o">sobrenome="Lopes"</span>
+<span class="o">texto="e tenho"</span>
+<span class="o">idade="29 anos"</span>
+
+<span class="g"># chamando_variaveis</span>
+<span class="o">echo $nome $sobrenome $texto $idade</span></div>
+  <p class="lede sm" style="margin-top:1.2em">Três elementos e nada mais: a <span class="hl">primeira linha</span> que diz quem executa, os <span class="hl">comentários</span> que explicam, e os <span class="hl">comandos</span> que fazem.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">head -1 script.sh</span></div>
+  <h2>A primeira linha: shebang</h2>
+  <p class="lede">O <code>#!</code> seguido do caminho diz ao sistema <span class="hl">qual programa deve interpretar</span> o arquivo. Sem ela, o comportamento depende de quem chamou.</p>
+  <div class="grid g2" style="margin-top:clamp(14px,2.4vh,24px)">
+    <div class="card teal"><h3><code>#!/bin/bash</code></h3><p>Bash completo. Tem arrays, <code>[[ ]]</code>, <code>$(( ))</code> e tudo que vamos usar.</p><p><strong>Use sempre este.</strong></p></div>
+    <div class="card"><h3><code>#!/bin/sh</code></h3><p>Shell mínimo. Vários recursos do bash não funcionam — e o erro que aparece não diz qual é o problema real.</p></div>
+  </div>
+  <div class="term" style="margin-top:clamp(12px,2vh,20px)"><span class="g"># testandoread.sh começa com #!/bin/sh</span>
+<span class="g"># funciona hoje, porque só usa echo e read.</span>
+<span class="g"># No dia em que ganhar um array, quebra sem avisar o motivo.</span></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">chmod +x script.sh &amp;&amp; ./script.sh</span></div>
+  <h2>Fazendo rodar</h2>
+  <div class="term"><span class="g"># 1. criar</span>
+<span class="p">aluno@linux</span><span class="g">:~$</span> <span class="c">nano meuprimeiroscript.sh</span>
+
+<span class="g"># 2. dar permissão de execução</span>
+<span class="p">aluno@linux</span><span class="g">:~$</span> <span class="c">chmod +x meuprimeiroscript.sh</span>
+
+<span class="g"># 3. executar</span>
+<span class="p">aluno@linux</span><span class="g">:~$</span> <span class="c">./meuprimeiroscript.sh</span>
+<span class="o">Sou uma mensagem</span>
+<span class="o">Meu nome é Thiago Lopes e tenho 29 anos</span></div>
+  <div class="lab warn" style="margin-top:clamp(12px,2vh,20px)"><div class="lab-h">Duas coisas que confundem no começo</div>
+    <p><strong>O <code>./</code> é obrigatório.</strong> Sem ele, o shell procura o comando nas pastas do sistema e não no diretório atual. Digitar só <code>meuprimeiroscript.sh</code> dá "comando não encontrado".</p>
+    <p><strong>Sem <code>chmod +x</code>, é só texto.</strong> A permissão de execução é o que transforma o arquivo em programa. Alternativa sem permissão: <code>bash meuprimeiroscript.sh</code>.</p></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">nome="valor"</span></div>
+  <h2>Variáveis</h2>
+  <div class="term"><span class="g"># atribuição: SEM espaço em volta do igual</span>
+<span class="o">nome="Thiago"</span>
+<span class="o">idade=29</span>
+
+<span class="err">nome = "Thiago"</span>
+<span class="g"># ERRO: o shell entende "nome" como um comando a executar</span>
+
+<span class="g"># uso: sempre com cifrão</span>
+<span class="o">echo $nome</span>
+<span class="o">echo "Olá, $nome"</span>
+<span class="o">echo "${nome}Lopes"</span>    <span class="g"># chaves marcam onde o nome termina</span></div>
+  <div class="lab" style="margin-top:clamp(12px,2vh,20px)"><div class="lab-h">Aspas: a regra prática</div>
+    <p><strong>Duplas</strong> expandem variáveis — <code>"$nome"</code> vira Thiago.<br>
+    <strong>Simples</strong> não expandem nada — <code>'$nome'</code> vira literalmente <code>$nome</code>.<br>
+    Na dúvida, use duplas. E use sempre alguma.</p></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">nano info.sh</span></div>
+  <h2>Script útil já na primeira aula</h2>
+  <div class="term"><span class="c">#!/bin/bash</span>
+
+<span class="o">echo "Seu nome de usuário é:"</span>
+<span class="o">whoami</span>
+
+<span class="o">echo "Info de hora atual e tempo que o computador está ligado:"</span>
+<span class="o">uptime</span>
+
+<span class="o">echo "O script está executando do diretorio:"</span>
+<span class="o">pwd</span></div>
+  <p class="lede sm" style="margin-top:1.2em">Repare no que este script é: <span class="hl">três comandos que você já digitava à mão</span>, agora em um arquivo. É literalmente isso que shell script faz — guarda o que você repetiria.</p>
+  <p class="lede sm dim">Melhoria imediata: troque as chamadas soltas por <code>$(comando)</code> e monte frases completas. Vamos fazer isso no laboratório.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">data=$(date)</span></div>
+  <h2>Guardando a saída de um comando</h2>
+  <p class="lede sm">O <code>$( )</code> executa o comando e devolve o resultado como texto. É o que liga shell script ao resto do sistema.</p>
+  <div class="term"><span class="c">#!/bin/bash</span>
+
+<span class="o">usuario=$(whoami)</span>
+<span class="o">pasta=$(pwd)</span>
+<span class="o">data=$(date '+%d/%m/%Y')</span>
+<span class="o">hora=$(date '+%H:%M')</span>
+<span class="o">arquivos=$(ls | wc -l)</span>
+
+<span class="o">echo "Olá $usuario!"</span>
+<span class="o">echo "Hoje é $data, agora são $hora."</span>
+<span class="o">echo "Você está em $pasta e há $arquivos itens aqui."</span></div>
+  <div class="term" style="margin-top:clamp(10px,1.6vh,16px)"><span class="o">Olá thiago!</span>
+<span class="o">Hoje é 31/08/2026, agora são 20:14.</span>
+<span class="o">Você está em /home/thiago e há 7 itens aqui.</span></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">: &lt;&lt;'FIM'</span></div>
+  <h2>Comentários</h2>
+  <div class="term"><span class="g"># comentário de uma linha</span>
+
+<span class="g"># bloco de várias linhas:</span>
+<span class="o">: &lt;&lt;'COMENTARIO'</span>
+<span class="o">echo "teste1"</span>
+<span class="o">echo "teste2"</span>
+<span class="o">COMENTARIO</span>
+
+<span class="g"># o delimitador de abertura e o de fechamento</span>
+<span class="g"># precisam ser EXATAMENTE iguais</span></div>
+  <div class="lab warn" style="margin-top:clamp(12px,2vh,20px)"><div class="lab-h">Um erro real, para vocês verem funcionando</div>
+    <p>Se você abrir com <code>'BLOCO COMENTARIO'</code> e fechar com <code>COMENTARIO</code>, os delimitadores não batem. O bash procura o fechamento até o fim do arquivo e avisa:</p>
+    <p><code style="color:var(--red)">warning: here-document delimited by end-of-file</code></p>
+    <p><span class="hl">O script roda mesmo assim</span> — e é justamente por isso que o aviso passa despercebido. Funcionar não é o mesmo que estar certo.</p></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./pratica.sh</span></div>
+  <h2>Mão na massa</h2>
+  <div class="lab"><div class="lab-h">Roteiro do laboratório</div>
+    <ul class="rules tight" style="margin-top:0">
+      <li><span class="n">01</span><span>Crie <code>meuprimeiroscript.sh</code> com os seus dados, dê <code>chmod +x</code> e execute.</span></li>
+      <li><span class="n">02</span><span>Tente rodar sem o <code>./</code> e sem o <code>chmod</code>. Anote as duas mensagens de erro.</span></li>
+      <li><span class="n">03</span><span>Escreva o <code>info.sh</code> e depois reescreva usando <code>$( )</code> para montar frases completas.</span></li>
+      <li><span class="n">04</span><span>Acrescente ao <code>info.sh</code>: espaço livre em disco (<code>df -h /</code>) e memória (<code>free -h</code>).</span></li>
+      <li><span class="n">05</span><span>Crie um bloco de comentário com delimitadores diferentes e provoque o aviso de propósito.</span></li>
+      <li><span class="n">06</span><span>Teste a diferença entre aspas simples e duplas com uma variável.</span></li>
+    </ul></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">exit</span><span class="caret"></span></div>
+  <h2>Para a próxima</h2>
+  <p class="lede">Seus scripts já falam. Na <span class="hl-t">Aula 05</span> eles passam a <strong>escutar</strong>: ler o que o usuário digita, receber argumentos e fazer contas.</p>
+  <p class="lede dim">Vamos construir uma calculadora do zero.</p>
+  <div class="cover-meta"><div>Prof. <b>Thiago Lopes</b></div><div><b>thiagolopesdev.com.br</b></div><div>Próxima · <b>14.09</b> — após o feriado</div></div>
+</div></section>
+
+</main>
+<script src="assets/deck.js"></script>
+</body>
+</html>
