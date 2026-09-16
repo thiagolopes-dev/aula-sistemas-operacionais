@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 05 — Entrada de dados e cálculos | Sistemas Operacionais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/deck.css">
+</head>
+<body data-aula="05" data-total="17">
+<main class="deck">
+
+<section class="slide on"><div class="wrap">
+  <div class="modtag" style="color:var(--teal);border-color:rgba(79,201,176,.3)">Módulo 02 · Shell Script</div>
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">read -p "Digite: " valor</span><span class="caret"></span></div>
+  <h1>Entrada de dados<br>e cálculos</h1>
+  <div class="rule-amber" style="background:var(--teal)"></div>
+  <div class="cover-meta"><div>Aula <b>05</b></div><div><b>14.09.2026</b></div><div>Prof. Thiago Lopes</div></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">nano testandoread.sh</span></div>
+  <h2>O comando read</h2>
+  <div class="term"><span class="c">#!/bin/bash</span>
+
+<span class="g">#Entre com seu nome</span>
+<span class="o">echo "Digite seu nome"</span>
+
+<span class="g">#READ</span>
+<span class="o">read nome</span>
+<span class="o">echo "Bem vindo $nome no terminal Linux"</span></div>
+  <div class="term" style="margin-top:clamp(10px,1.6vh,16px)"><span class="g"># versão mais enxuta: pergunta e lê na mesma linha</span>
+<span class="o">read -p "Digite seu nome: " nome</span>
+
+<span class="g"># dois valores de uma vez, separados por espaço</span>
+<span class="o">read -p "Nome e idade: " nome idade</span>
+
+<span class="g"># senha: não mostra o que está sendo digitado</span>
+<span class="o">read -sp "Senha: " senha</span>
+<span class="o">echo</span>   <span class="g"># o echo vazio pula a linha depois do -s</span></div>
+  <p class="lede sm dim" style="margin-top:1.1em">O <code>-s</code> é o mesmo comportamento do <code>sudo</code> quando pede senha: nem asterisco aparece. Todo script que pede senha deve usar.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./script.sh valor1 valor2</span></div>
+  <h2>Argumentos: entrada sem perguntar</h2>
+  <div class="term"><span class="c">#!/bin/bash</span>
+<span class="o">echo "Nome do script: $0"</span>
+<span class="o">echo "Primeiro:       $1"</span>
+<span class="o">echo "Segundo:        $2"</span>
+<span class="o">echo "Quantos vieram: $#"</span>
+<span class="o">echo "Todos juntos:   $@"</span></div>
+  <div class="term" style="margin-top:clamp(10px,1.6vh,16px)"><span class="p">aluno@linux</span><span class="g">:~$</span> <span class="c">./exemplo.sh Thiago 29</span>
+<span class="o">Nome do script: ./exemplo.sh</span>
+<span class="o">Primeiro:       Thiago</span>
+<span class="o">Segundo:        29</span>
+<span class="o">Quantos vieram: 2</span>
+<span class="o">Todos juntos:   Thiago 29</span></div>
+  <div class="lab" style="margin-top:clamp(12px,2vh,20px)"><div class="lab-h">Quando usar cada um</div>
+    <p><code>read</code> exige alguém na frente do teclado. <code>$1</code> não.</p>
+    <p>Script que vai rodar sozinho, agendado — e vocês vão escrever vários — <span class="hl">não pode usar <code>read</code></span>. Ele ficaria esperando para sempre.</p></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">echo $(( 2 + 2 ))</span></div>
+  <h2>Contas em shell</h2>
+  <p class="lede sm">Variáveis em shell são <span class="hl">texto por padrão</span>, não número. Para o shell, <code>"10" + "5"</code> não significa nada — é preciso pedir explicitamente uma operação aritmética.</p>
+  <div class="term"><span class="o">x=10</span>
+<span class="o">y=3</span>
+
+<span class="o">echo $(( x + y ))</span>     <span class="g"># 13</span>
+<span class="o">echo $(( x - y ))</span>     <span class="g"># 7</span>
+<span class="o">echo $(( x * y ))</span>     <span class="g"># 30</span>
+<span class="o">echo $(( x / y ))</span>     <span class="g"># 3   ← divisão INTEIRA</span>
+<span class="o">echo $(( x % y ))</span>     <span class="g"># 1   ← resto</span>
+<span class="o">echo $(( x ** 2 ))</span>    <span class="g"># 100 ← potência</span>
+
+<span class="g"># atribuindo direto — o soma.sh de vocês</span>
+<span class="o">(( sum = 25 + 35 ))</span>
+<span class="o">echo $sum</span>              <span class="g"># 60</span>
+
+<span class="g"># incremento, muito usado em laços</span>
+<span class="o">contador=$(( contador + 1 ))</span></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">echo "scale=2; 10/3" | bc</span></div>
+  <h2>Números com vírgula</h2>
+  <p class="lede">O shell só faz conta com inteiros. Para decimais, existe o <code>bc</code> — uma calculadora à parte que recebe a expressão pela entrada padrão.</p>
+  <div class="term"><span class="g"># sem bc</span>
+<span class="o">echo $(( 10 / 3 ))</span>
+<span class="err">3</span>
+
+<span class="g"># com bc: scale define as casas decimais</span>
+<span class="o">echo "scale=2; 10/3" | bc</span>
+<span class="ok">3.33</span>
+
+<span class="g"># usando variáveis</span>
+<span class="o">preco=49.90</span>
+<span class="o">qtd=3</span>
+<span class="o">total=$(echo "scale=2; $preco * $qtd" | bc)</span>
+<span class="o">echo "Total: R$ $total"</span>
+<span class="ok">Total: R$ 149.70</span></div>
+  <p class="lede sm dim" style="margin-top:1.1em">Se o <code>bc</code> não estiver instalado: <code>sudo apt install bc</code>.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">nano calculadora1.sh</span></div>
+  <h2>Montando a calculadora</h2>
+  <div class="term"><span class="c">#!/bin/bash</span>
+
+<span class="o">echo "Digite um número"</span>
+<span class="o">read num1</span>
+<span class="o">echo "Digite outro número"</span>
+<span class="o">read num2</span>
+
+<span class="o">resultado=$(( num1 + num2 ))</span>
+<span class="o">echo "A soma dos números é: $resultado"</span></div>
+  <div class="lab warn" style="margin-top:clamp(12px,2vh,20px)"><div class="lab-h">Sobre a sintaxe antiga</div>
+    <p>Você vai encontrar <code>$[ num1+num2 ]</code> em código pela internet — inclusive em exemplos meus antigos. Funciona, mas está obsoleto há mais de vinte anos e pode sumir em versões futuras do bash.</p>
+    <p><span class="hl">Use sempre <code>$(( ))</code>.</span> Duplos parênteses.</p></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">printf "%.2f\n" 3.14159</span></div>
+  <h2>Formatando a saída</h2>
+  <p class="lede sm">O <code>echo</code> resolve quase tudo. Quando a apresentação importa, o <code>printf</code> dá controle.</p>
+  <div class="term"><span class="g"># echo simples</span>
+<span class="o">echo "Total: $valor"</span>
+
+<span class="g"># printf com formatação</span>
+<span class="o">printf "Total: R$ %.2f\n" "$valor"</span>
+<span class="ok">Total: R$ 149.70</span>
+
+<span class="g"># alinhando colunas — útil em relatórios</span>
+<span class="o">printf "%-15s %8s\n" "Produto" "Preço"</span>
+<span class="o">printf "%-15s %8.2f\n" "Teclado" 150.00</span>
+<span class="o">printf "%-15s %8.2f\n" "Monitor" 899.90</span>
+<span class="ok">Produto            Preço</span>
+<span class="ok">Teclado           150.00</span>
+<span class="ok">Monitor           899.90</span></div>
+  <p class="lede sm dim" style="margin-top:1.1em"><code>%-15s</code> = texto alinhado à esquerda em 15 colunas. <code>%8.2f</code> = número com 2 decimais em 8 colunas. O <code>\n</code> é a quebra de linha, que o <code>printf</code> não coloca sozinho.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">bash -x script.sh</span></div>
+  <h2>Quando não funcionar</h2>
+  <div class="term"><span class="g"># mostra cada linha antes de executar, com as variáveis já substituídas</span>
+<span class="p">aluno@linux</span><span class="g">:~$</span> <span class="c">bash -x calculadora1.sh</span>
+<span class="o">+ echo 'Digite um número'</span>
+<span class="o">+ read num1</span>
+<span class="o">+ read num2</span>
+<span class="o">+ resultado=15</span>
+<span class="o">+ echo 'A soma dos números é: 15'</span>
+
+<span class="g"># verifica a sintaxe SEM executar</span>
+<span class="p">aluno@linux</span><span class="g">:~$</span> <span class="c">bash -n calculadora1.sh</span></div>
+  <p class="lede sm" style="margin-top:1.1em">O <code>-x</code> é a ferramenta número um de depuração em shell. Quando o script faz algo que você não esperava, ele mostra <span class="hl">exatamente o que o shell entendeu</span> — que costuma ser diferente do que você escreveu.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./pratica.sh</span></div>
+  <h2>Mão na massa</h2>
+  <div class="lab"><div class="lab-h">Roteiro do laboratório</div>
+    <ul class="rules tight" style="margin-top:0">
+      <li><span class="n">01</span><span>Escreva o <code>testandoread.sh</code> e depois melhore usando <code>read -p</code>.</span></li>
+      <li><span class="n">02</span><span>Faça a <code>calculadora1.sh</code> somando dois números lidos do teclado.</span></li>
+      <li><span class="n">03</span><span>Reescreva a mesma calculadora recebendo os números por <strong>argumento</strong>.</span></li>
+      <li><span class="n">04</span><span>Amplie: mostre soma, subtração, multiplicação e divisão de uma vez.</span></li>
+      <li><span class="n">05</span><span>Use <code>bc</code> para que a divisão mostre duas casas decimais.</span></li>
+      <li><span class="n">06</span><span>Formate a saída com <code>printf</code>, em colunas alinhadas.</span></li>
+      <li><span class="n">07</span><span>Rode tudo com <code>bash -x</code> e observe as substituições.</span></li>
+    </ul></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">exit</span><span class="caret"></span></div>
+  <h2>Para a próxima</h2>
+  <p class="lede">Sua calculadora soma. Mas e se o usuário quiser escolher a operação? E se digitar zero na divisão?</p>
+  <p class="lede">Na <span class="hl-t">Aula 06</span> os scripts começam a <strong>decidir</strong> — e vamos dissecar uma calculadora com bug e um script de login com cinco problemas.</p>
+  <div class="cover-meta"><div>Prof. <b>Thiago Lopes</b></div><div><b>thiagolopesdev.com.br</b></div><div>Próxima · <b>21.09</b></div></div>
+</div></section>
+
+</main>
+<script src="assets/deck.js"></script>
+</body>
+</html>
