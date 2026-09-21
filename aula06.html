@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 06 — Condições e decisões | Sistemas Operacionais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/deck.css">
+</head>
+<body data-aula="06" data-total="17">
+<main class="deck">
+
+<section class="slide on"><div class="wrap">
+  <div class="modtag" style="color:var(--teal);border-color:rgba(79,201,176,.3)">Módulo 02 · Shell Script</div>
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">if [ $x -ge 20 ]; then</span><span class="caret"></span></div>
+  <h1>Condições<br>e decisões</h1>
+  <div class="rule-amber" style="background:var(--teal)"></div>
+  <div class="cover-meta"><div>Aula <b>06</b></div><div><b>21.09.2026</b></div><div>Prof. Thiago Lopes</div></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">nano calc.sh</span></div>
+  <h2>A estrutura if</h2>
+  <div class="term"><span class="c">#!/bin/bash</span>
+
+<span class="o">echo "Digite um número qualquer:"</span>
+<span class="o">read numero</span>
+
+<span class="o">if [ $numero -ge 20 ]; then</span>
+<span class="o">    echo "este número é maior ou igual a 20"</span>
+<span class="o">else</span>
+<span class="o">    echo "este número é menor que 20"</span>
+<span class="o">fi</span></div>
+  <div class="grid g2" style="margin-top:clamp(12px,2vh,20px)">
+    <div class="card teal"><h3>As palavras</h3><p><code>if</code> · <code>then</code> · <code>elif</code> · <code>else</code> · <code>fi</code></p><p><code>fi</code> é <code>if</code> escrito ao contrário. A mesma brincadeira aparece em <code>case</code> / <code>esac</code>.</p></div>
+    <div class="card"><h3>O ponto e vírgula</h3><p><code>then</code> é uma instrução separada. Na mesma linha do <code>if</code>, precisa de <code>;</code> antes. Em linha própria, dispensa.</p></div>
+  </div>
+  <p class="lede sm dim" style="margin-top:1.2em">Os espaços dentro dos colchetes são <strong>obrigatórios</strong>. <code>[</code> é um comando, e comando precisa estar separado dos argumentos. <code>[$x -ge 20]</code> dá erro.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">man test</span></div>
+  <h2>Operadores de teste</h2>
+  <div class="grid g2">
+    <div class="card teal"><h3>Números</h3><p><code>-eq</code> igual · <code>-ne</code> diferente</p><p><code>-gt</code> maior · <code>-ge</code> maior ou igual</p><p><code>-lt</code> menor · <code>-le</code> menor ou igual</p></div>
+    <div class="card"><h3>Texto</h3><p><code>=</code> iguais · <code>!=</code> diferentes</p><p><code>-z</code> está vazio · <code>-n</code> não está vazio</p></div>
+    <div class="card violet"><h3>Arquivos</h3><p><code>-e</code> existe · <code>-f</code> é arquivo · <code>-d</code> é diretório</p><p><code>-r</code> posso ler · <code>-w</code> posso escrever · <code>-x</code> posso executar · <code>-s</code> não está vazio</p></div>
+    <div class="card blue"><h3>Combinando</h3><p><code>&amp;&amp;</code> e · <code>||</code> ou · <code>!</code> negação</p><p><code>if [ -f "$a" ] &amp;&amp; [ -r "$a" ]; then</code></p></div>
+  </div>
+  <div class="lab warn" style="margin-top:clamp(12px,2vh,20px)"><div class="lab-h">A armadilha que pega todo mundo</div>
+    <p><code>-eq</code> compara <strong>números</strong>. <code>=</code> compara <strong>texto</strong>. Trocar os dois não dá erro — dá resultado errado em silêncio.</p>
+    <p><code>[ "01" = "1" ]</code> é <span class="hl-r">falso</span>. <code>[ 01 -eq 1 ]</code> é <span class="hl-t">verdadeiro</span>.</p></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">nano calculadora2.sh</span></div>
+  <h2>Vários caminhos: elif</h2>
+  <div class="term compact"><span class="c">#!/bin/bash</span>
+<span class="o">read num1; read num2</span>
+<span class="o">echo "1-Somar  2-Subtrair  3-Multiplicar  4-Dividir"</span>
+<span class="o">read equacao</span>
+
+<span class="o">if [ $equacao -eq 1 ]; then</span>
+<span class="o">    resultado=$(( num1 + num2 ))</span>
+<span class="o">elif [ $equacao -eq 2 ]; then</span>
+<span class="o">    resultado=$(( num1 - num2 ))</span>
+<span class="o">elif [ $equacao -eq 3 ]; then</span>
+<span class="o">    resultado=$(( num1 * num2 ))</span>
+<span class="o">elif [ $equacao -eq 4 ]; then</span>
+<span class="o">    resultado=$(( num1 / num2 ))</span>
+<span class="o">else</span>
+<span class="o">    echo "Opção inválida"</span>
+<span class="o">fi</span>
+<span class="err">echo "O resultado é: $resultado"</span></div>
+  <p class="lede" style="margin-top:1.1em">Este script <strong>funciona</strong>. E tem <span class="hl-r">três defeitos.</span></p>
+  <p class="lede sm dim">Rodem com a opção 9. Depois com 10 e 0. Cinco minutos.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">bash calculadora2.sh</span></div>
+  <h2>Os três defeitos</h2>
+  <div class="term compact"><span class="g"># opção inválida</span>
+<span class="p">$</span> <span class="c">bash calculadora2.sh</span>
+<span class="o">10 / 5 / 9</span>
+<span class="o">Opção inválida</span>
+<span class="err">O resultado é: </span>      <span class="g">← vazio, e ninguém reclamou</span>
+
+<span class="g"># divisão por zero</span>
+<span class="err">calculadora2.sh: division by 0</span>
+
+<span class="g"># divisão comum</span>
+<span class="o">10 / 3 = 3</span>              <span class="g">← divisão inteira</span></div>
+  <ul class="rules tight" style="margin-top:clamp(12px,2vh,20px)">
+    <li><span class="n">01</span><span><strong>O <code>echo</code> final está fora do <code>if</code>.</strong> Roda sempre, mesmo quando a variável não foi criada. O shell trata variável inexistente como texto vazio e segue em frente.</span></li>
+    <li><span class="n">02</span><span><strong>Divisão por zero derruba o script.</strong> Falta testar antes.</span></li>
+    <li><span class="n">03</span><span><strong>Divisão inteira.</strong> Não é bug, é como o shell funciona — mas o usuário não sabe disso.</span></li>
+  </ul>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">case $var in ... esac</span></div>
+  <h2>A versão corrigida, com case</h2>
+  <div class="term compact"><span class="c">#!/bin/bash</span>
+<span class="o">set -u</span>                       <span class="g"># variável indefinida vira ERRO</span>
+
+<span class="o">read -p "Primeiro número: " num1</span>
+<span class="o">read -p "Segundo número: "  num2</span>
+<span class="o">echo "1-Somar 2-Subtrair 3-Multiplicar 4-Dividir"</span>
+<span class="o">read -p "Opção: " opcao</span>
+
+<span class="o">case "$opcao" in</span>
+<span class="o">    1) resultado=$(( num1 + num2 )) ;;</span>
+<span class="o">    2) resultado=$(( num1 - num2 )) ;;</span>
+<span class="o">    3) resultado=$(( num1 * num2 )) ;;</span>
+<span class="o">    4)</span>
+<span class="o">       if [ "$num2" -eq 0 ]; then</span>
+<span class="o">           echo "Não dá para dividir por zero"; exit 1</span>
+<span class="o">       fi</span>
+<span class="o">       resultado=$(echo "scale=2; $num1/$num2" | bc) ;;</span>
+<span class="o">    *) echo "Opção inválida"; exit 1 ;;</span>
+<span class="o">esac</span>
+
+<span class="o">echo "Resultado: $resultado"</span></div>
+  <p class="lede sm dim" style="margin-top:1.1em">O <code>;;</code> fecha cada caso. O <code>*)</code> é o "qualquer outra coisa". Muito mais legível que a corrente de <code>elif</code> — e é o padrão que o <code>systemctl</code> usa por dentro.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">echo $?</span></div>
+  <h2>O código de saída</h2>
+  <p class="lede">Todo comando devolve um número ao terminar. <span class="hl">Zero é sucesso</span>; qualquer outro valor é erro. É assim que o <code>if</code> decide de verdade.</p>
+  <div class="term"><span class="p">$</span> <span class="c">ls /home &gt; /dev/null; echo $?</span>
+<span class="ok">0</span>
+<span class="p">$</span> <span class="c">ls /naoexiste 2&gt; /dev/null; echo $?</span>
+<span class="err">2</span>
+
+<span class="g"># testando um COMANDO direto, sem colchetes</span>
+<span class="o">if ping -c1 8.8.8.8 &gt; /dev/null 2&gt;&amp;1; then</span>
+<span class="o">    echo "Internet funcionando"</span>
+<span class="o">else</span>
+<span class="o">    echo "Sem conexão"</span>
+<span class="o">fi</span>
+
+<span class="g"># o seu script também devolve código</span>
+<span class="o">exit 0</span>   <span class="g"># deu certo</span>
+<span class="o">exit 1</span>   <span class="g"># deu errado</span></div>
+  <p class="lede sm dim" style="margin-top:1.1em">Invertido em relação a outras linguagens, e faz sentido: só existe um jeito de dar certo, e muitos de dar errado. Cada número identifica um erro diferente.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">cat login.sh</span></div>
+  <h2>Estudo de caso · o login</h2>
+  <div class="term compact"><span class="c">#!/bin/bash</span>
+<span class="o">echo "Digite seu login"</span>
+<span class="o">read login</span>
+<span class="o">echo "Digite sua senha"</span>
+<span class="o">read senha</span>
+
+<span class="o">if [[ ( $login == "12345678900" &amp;&amp; $senha == "admin" ) ]]; then</span>
+<span class="o">    echo "Logado com sucesso !"</span>
+<span class="o">else</span>
+<span class="o">    echo "Usuário ou senha incorretos !"</span>
+<span class="o">fi</span></div>
+  <p class="lede" style="margin-top:1.2em">Funciona perfeitamente. E tem <span class="hl-r">cinco problemas de segurança.</span></p>
+  <p class="lede sm dim">Em dupla, cinco minutos. Achem todos antes do próximo slide.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./resposta.sh</span></div>
+  <h2>Os cinco problemas</h2>
+  <ul class="rules tight">
+    <li><span class="n">01</span><span><strong>Credencial dentro do código.</strong> Um <code>cat login.sh</code> revela a senha. Quem lê o arquivo entra.</span></li>
+    <li><span class="n">02</span><span><strong>Senha em texto puro.</strong> Deveria comparar o <em>hash</em>, nunca a senha em si.</span></li>
+    <li><span class="n">03</span><span><strong><code>read</code> sem <code>-s</code>.</strong> A senha aparece na tela, à vista de quem está atrás.</span></li>
+    <li><span class="n">04</span><span><strong>Dado pessoal no arquivo.</strong> Se isso for para o GitHub, o CPF vai junto — e histórico de commit não se apaga.</span></li>
+    <li><span class="n">05</span><span><strong>Variáveis sem aspas.</strong> Entrada com espaço ou caractere especial pode alterar o teste.</span></li>
+  </ul>
+  <div class="term compact" style="margin-top:clamp(10px,1.8vh,18px)"><span class="g"># a versão corrigida</span>
+<span class="o">read -p "Login: " login</span>
+<span class="o">read -sp "Senha: " senha; echo</span>
+<span class="o">hash_digitado=$(echo -n "$senha" | sha256sum | cut -d' ' -f1)</span>
+<span class="o">hash_guardado=$(grep "^${login}:" "$HOME/.credenciais" | cut -d: -f2)</span>
+<span class="o">if [ -n "$hash_guardado" ] &amp;&amp; [ "$hash_digitado" = "$hash_guardado" ]; then</span></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./pratica.sh</span></div>
+  <h2>Mão na massa</h2>
+  <div class="lab"><div class="lab-h">Roteiro do laboratório</div>
+    <ul class="rules tight" style="margin-top:0">
+      <li><span class="n">01</span><span>Escreva o <code>calc.sh</code> e acrescente o <code>else</code> que faltava.</span></li>
+      <li><span class="n">02</span><span>Digite a <code>calculadora2.sh</code> e reproduza os três defeitos.</span></li>
+      <li><span class="n">03</span><span>Reescreva com <code>case</code>, tratando divisão por zero e usando <code>bc</code>.</span></li>
+      <li><span class="n">04</span><span>Script que recebe um caminho por argumento e diz se é arquivo, diretório ou não existe.</span></li>
+      <li><span class="n">05</span><span>Script que verifica se outro arquivo tem permissão de execução — e concede se não tiver.</span></li>
+      <li><span class="n">06</span><span>Reescreva o <code>login.sh</code> corrigindo os cinco problemas.</span></li>
+    </ul></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">exit</span><span class="caret"></span></div>
+  <h2>Para a próxima</h2>
+  <p class="lede">Seus scripts decidem. Mas ainda fazem cada coisa <strong>uma vez só</strong>.</p>
+  <p class="lede">Na <span class="hl-t">Aula 07</span> entram os <strong>laços</strong>: repetir sobre listas, sobre arquivos, sobre milhões de números. É quando o script começa a fazer trabalho que ninguém faria à mão.</p>
+  <div class="cover-meta"><div>Prof. <b>Thiago Lopes</b></div><div><b>thiagolopesdev.com.br</b></div><div>Próxima · <b>28.09</b></div></div>
+</div></section>
+
+</main>
+<script src="assets/deck.js"></script>
+</body>
+</html>

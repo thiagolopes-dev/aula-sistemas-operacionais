@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 11 — Automação com cron | Sistemas Operacionais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/deck.css">
+</head>
+<body data-aula="11" data-total="17">
+<main class="deck">
+
+<section class="slide on"><div class="wrap">
+  <div class="modtag" style="color:var(--violet);border-color:rgba(155,140,232,.3)">Módulo 03 · Permissões e Automação</div>
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">crontab -e</span><span class="caret"></span></div>
+  <h1>Automação<br>com cron</h1>
+  <div class="rule-amber" style="background:var(--violet)"></div>
+  <div class="cover-meta"><div>Aula <b>11</b></div><div><b>09.11.2026</b></div><div>Prof. Thiago Lopes</div></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">echo $O_ULTIMO_PASSO</span></div>
+  <p class="big-q">Seu backup só roda<br>quando você lembra.<br><em>Ou seja: nunca.</em></p>
+  <p class="lede" style="margin-top:1.6em">Hoje os scripts ganham a última capacidade que falta — <span class="hl">rodar sozinhos</span>, no horário certo, sem ninguém na frente do teclado.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">crontab -e</span></div>
+  <h2>Os cinco campos</h2>
+  <div class="term"><span class="g">┌───── minuto (0-59)</span>
+<span class="g">│ ┌─── hora (0-23)</span>
+<span class="g">│ │ ┌─ dia do mês (1-31)</span>
+<span class="g">│ │ │ ┌─ mês (1-12)</span>
+<span class="g">│ │ │ │ ┌─ dia da semana (0-7, domingo = 0 ou 7)</span>
+<span class="g">│ │ │ │ │</span>
+<span class="g">* * * * *  comando a executar</span></div>
+  <div class="term" style="margin-top:clamp(10px,1.6vh,16px)"><span class="o">*/5 * * * *   /home/thiago/monitora.sh</span>   <span class="g"># a cada 5 minutos</span>
+<span class="o">0 3 * * *     /home/thiago/backup.sh</span>     <span class="g"># todo dia às 3h</span>
+<span class="o">0 0 * * 0     /home/thiago/semanal.sh</span>    <span class="g"># domingo à meia-noite</span>
+<span class="o">30 8 1 * *    /home/thiago/mensal.sh</span>     <span class="g"># dia 1, às 8h30</span>
+<span class="o">0 9-18 * * 1-5 /home/thiago/hora.sh</span>      <span class="g"># de hora em hora, dias úteis</span></div>
+  <p class="lede sm dim" style="margin-top:1.1em">O <code>*</code> é "qualquer valor". O <code>*/5</code> é "de 5 em 5". O <code>9-18</code> é intervalo. O <code>1-5</code> em dia da semana é segunda a sexta.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">crontab -l</span></div>
+  <h2>Gerenciando os agendamentos</h2>
+  <div class="term"><span class="c">crontab -e</span>    <span class="g"># editar (abre o editor padrão)</span>
+<span class="c">crontab -l</span>    <span class="g"># listar o que está agendado</span>
+<span class="c">crontab -r</span>    <span class="g"># remover TUDO — cuidado, não pergunta</span></div>
+  <div class="lab warn" style="margin-top:clamp(12px,2vh,20px)"><div class="lab-h">Duas armadilhas de digitação</div>
+    <p><strong>O <code>-r</code> fica ao lado do <code>-e</code>.</strong> Um deslize e você apaga todos os agendamentos sem confirmação. Antes de editar, faça: <code>crontab -l &gt; ~/cron-backup.txt</code></p>
+    <p><strong>A última linha precisa terminar com Enter.</strong> Sem quebra de linha no final, o cron ignora a última entrada em silêncio.</p></div>
+  <div class="term" style="margin-top:clamp(10px,1.6vh,16px)"><span class="g"># restaurar a partir do backup</span>
+<span class="c">crontab ~/cron-backup.txt</span></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">env -i bash</span></div>
+  <h2>Por que o script falha no cron</h2>
+  <p class="lede">Funciona quando você roda à mão, não funciona agendado. <span class="hl-r">É o erro número um de shell script</span> — e a causa é sempre a mesma.</p>
+  <div class="lab warn"><div class="lab-h">O cron roda com ambiente mínimo</div>
+    <p>O <code>$PATH</code> dele tem quase nada. As variáveis do seu <code>.bashrc</code> <strong>não existem lá</strong>. O diretório de trabalho não é o seu <code>home</code>.</p>
+    <p>Vocês já viram isso acontecer nesta disciplina: na Aula 03, o script que criou os usuários falhou com <code>groupadd: comando não encontrado</code>. O comando existia — <span class="hl">o <code>PATH</code> daquele shell é que não alcançava <code>/usr/sbin</code>.</span></p></div>
+  <div class="term" style="margin-top:clamp(12px,2vh,20px)"><span class="g"># veja a diferença você mesmo</span>
+<span class="p">$</span> <span class="c">echo $PATH</span>
+<span class="o">/usr/local/bin:/usr/bin:/bin:/usr/local/games...</span>
+
+<span class="p">$</span> <span class="c">env -i bash -c 'echo $PATH'</span>
+<span class="err">/usr/bin:/bin</span>       <span class="g">← é isso que o cron enxerga</span></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">cat script-a-prova-de-cron.sh</span></div>
+  <h2>As quatro defesas</h2>
+  <div class="term"><span class="c">#!/bin/bash</span>
+<span class="o">set -u</span>
+
+<span class="g"># 1. fixe o PATH</span>
+<span class="o">export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"</span>
+
+<span class="g"># 2. defina as variáveis que você precisa</span>
+<span class="o">HOME_DIR="/home/thiago"</span>
+<span class="o">LOG="$HOME_DIR/backup.log"</span>
+
+<span class="g"># 3. use caminhos absolutos, sempre</span>
+<span class="o">cd "$HOME_DIR" || exit 1</span>
+
+<span class="g"># 4. registre tudo, inclusive erros</span>
+<span class="o">echo "[$(date '+%F %T')] iniciando" &gt;&gt; "$LOG"</span></div>
+  <div class="term" style="margin-top:clamp(10px,1.6vh,16px)"><span class="g"># e no crontab, capture a saída COMPLETA</span>
+<span class="o">*/5 * * * * /home/thiago/monitora.sh &gt;&gt; /home/thiago/cron.log 2&gt;&amp;1</span>
+<span class="g">#                                                              ↑</span>
+<span class="g">#                                        sem isso, o erro some para sempre</span></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">grep CRON /var/log/syslog</span></div>
+  <h2>Descobrindo se rodou</h2>
+  <div class="term"><span class="g"># o sistema registra cada execução do cron</span>
+<span class="c">grep CRON /var/log/syslog | tail -10</span>
+
+<span class="g"># em algumas distribuições</span>
+<span class="c">journalctl -u cron --since "1 hour ago"</span>
+
+<span class="g"># o seu próprio log é o mais confiável</span>
+<span class="c">tail -f ~/cron.log</span></div>
+  <div class="lab" style="margin-top:clamp(12px,2vh,20px)"><div class="lab-h">Método de teste que economiza horas</div>
+    <p><strong>1.</strong> Agende para daqui a 2 minutos, não para as 3 da manhã.</p>
+    <p><strong>2.</strong> Confirme no log que rodou e deu certo.</p>
+    <p><strong>3.</strong> Só então mude para o horário real.</p>
+    <p>Ninguém deveria descobrir que o backup nunca rodou <span class="hl-r">no dia em que precisou dele.</span></p></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./automatizado.sh</span></div>
+  <h2>Rotina completa de automação</h2>
+  <div class="term compact"><span class="c">#!/bin/bash</span>
+<span class="g"># manutencao.sh — roda sozinho todo dia</span>
+<span class="o">set -u</span>
+<span class="o">export PATH="/usr/local/bin:/usr/bin:/bin"</span>
+
+<span class="o">BASE="/home/thiago"</span>
+<span class="o">LOG="$BASE/manutencao.log"</span>
+
+<span class="o">log() { echo "[$(date '+%F %T')] $1" &gt;&gt; "$LOG"; }</span>
+
+<span class="o">log "=== início da manutenção ==="</span>
+
+<span class="g"># 1. backup dos scripts</span>
+<span class="o">tar -czf "$BASE/backups/scripts_$(date +%Y%m%d).tar.gz" \</span>
+<span class="o">    -C "$BASE" scripts 2&gt;&gt; "$LOG" \</span>
+<span class="o">    &amp;&amp; log "backup ok" || log "backup FALHOU"</span>
+
+<span class="g"># 2. checagem de disco</span>
+<span class="o">uso=$(df -h / | tail -1 | awk '{print $5}' | tr -dc '0-9')</span>
+<span class="o">log "disco em ${uso}%"</span>
+<span class="o">[ "$uso" -gt 80 ] &amp;&amp; log "ALERTA: disco alto"</span>
+
+<span class="g"># 3. limpeza de backups antigos</span>
+<span class="o">find "$BASE/backups" -name "*.tar.gz" -mtime +7 -delete</span>
+<span class="o">log "=== fim ==="</span></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./pratica.sh</span></div>
+  <h2>Mão na massa</h2>
+  <div class="lab"><div class="lab-h">Roteiro do laboratório</div>
+    <ul class="rules tight" style="margin-top:0">
+      <li><span class="n">01</span><span>Faça backup do seu crontab antes de qualquer coisa.</span></li>
+      <li><span class="n">02</span><span>Agende o <code>monitora.sh</code> da Aula 09 para rodar a cada 2 minutos.</span></li>
+      <li><span class="n">03</span><span>Espere e confirme no log que rodou.</span></li>
+      <li><span class="n">04</span><span><strong>Quebre de propósito:</strong> tire o <code>export PATH</code> e chame <code>df</code> sem caminho absoluto. Veja falhar no cron e funcionar na mão.</span></li>
+      <li><span class="n">05</span><span>Conserte aplicando as quatro defesas e confirme.</span></li>
+      <li><span class="n">06</span><span>Implemente o <code>manutencao.sh</code> completo e agende para o horário que quiser.</span></li>
+      <li><span class="n">07</span><span>Remova os agendamentos de teste com <code>crontab -e</code> — <span class="hl-r">não com <code>-r</code></span>.</span></li>
+    </ul></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">exit</span><span class="caret"></span></div>
+  <h2>Fim do Módulo 03</h2>
+  <p class="lede">Você escreve scripts, controla quem os executa e os faz rodar sozinhos.</p>
+  <p class="lede">Na <span class="hl" style="color:var(--blue)">Aula 12</span> abre o último módulo, e a virada do semestre: vocês vão gerar uma <strong>aplicação Node com CRUD de pessoas</strong> — sem escrever uma linha de código — e nas aulas seguintes colocá-la no ar.</p>
+  <div class="cover-meta"><div>Prof. <b>Thiago Lopes</b></div><div><b>thiagolopesdev.com.br</b></div><div>Próxima · <b>16.11</b></div></div>
+</div></section>
+
+</main>
+<script src="assets/deck.js"></script>
+</body>
+</html>

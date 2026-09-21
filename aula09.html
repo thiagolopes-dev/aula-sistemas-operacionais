@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 09 — Scripts de administração | Sistemas Operacionais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/deck.css">
+</head>
+<body data-aula="09" data-total="17">
+<main class="deck">
+
+<section class="slide on"><div class="wrap">
+  <div class="modtag" style="color:var(--teal);border-color:rgba(79,201,176,.3)">Módulo 02 · Shell Script</div>
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./monitora.sh</span><span class="caret"></span></div>
+  <h1>Scripts de<br>administração</h1>
+  <div class="rule-amber" style="background:var(--teal)"></div>
+  <div class="cover-meta"><div>Aula <b>09</b></div><div><b>19.10.2026</b></div><div>Prof. Thiago Lopes</div></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">echo $HOJE</span></div>
+  <p class="big-q">Hoje os scripts<br>param de ser exercício<br>e viram <em>ferramenta.</em></p>
+  <p class="lede" style="margin-top:1.6em">Três scripts que qualquer administrador de sistema tem na máquina: <span class="hl">relatório, monitoramento e backup</span>. Vocês vão sair com os três funcionando.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">cat comandos-de-informacao.md</span></div>
+  <h2>De onde vêm os dados</h2>
+  <table class="ps keep"><thead><tr><th>Comando</th><th>Devolve</th></tr></thead><tbody>
+    <tr><td>whoami / hostname</td><td>Quem sou e em qual máquina.</td></tr>
+    <tr><td>uptime</td><td>Há quanto tempo está ligada e a carga atual.</td></tr>
+    <tr><td>df -h /</td><td>Espaço em disco.</td></tr>
+    <tr><td>free -h</td><td>Memória usada e disponível.</td></tr>
+    <tr><td>nproc</td><td>Quantos núcleos de processador.</td></tr>
+    <tr><td>ps aux</td><td>Tudo que está rodando.</td></tr>
+    <tr><td>ss -tln</td><td>Quais portas estão escutando.</td></tr>
+    <tr><td>who</td><td>Quem está conectado.</td></tr>
+  </tbody></table>
+  <p class="lede sm dim" style="margin-top:1.2em">Todos devolvem <span class="hl">texto</span> — e é por isso que shell script funciona tão bem em administração: tudo que o sistema informa pode ser capturado com <code>$( )</code>, filtrado com <code>grep</code> e cortado com <code>cut</code>.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">df -h / | tail -1 | awk '{print $5}'</span></div>
+  <h2>Extraindo só o que interessa</h2>
+  <div class="term"><span class="g"># a saída bruta tem cabeçalho e várias colunas</span>
+<span class="p">$</span> <span class="c">df -h /</span>
+<span class="o">Sist.Arq. Tam. Usado Disp. Uso% Montado</span>
+<span class="o">/dev/sda1 117G  1,9G  109G   2% /</span>
+
+<span class="g"># tail -1 tira o cabeçalho</span>
+<span class="p">$</span> <span class="c">df -h / | tail -1</span>
+
+<span class="g"># awk pega a coluna 5</span>
+<span class="p">$</span> <span class="c">df -h / | tail -1 | awk '{print $5}'</span>
+<span class="ok">2%</span>
+
+<span class="g"># tr tira tudo que não for número</span>
+<span class="p">$</span> <span class="c">df -h / | tail -1 | awk '{print $5}' | tr -dc '0-9'</span>
+<span class="ok">2</span>
+
+<span class="g"># agora dá para comparar num if</span>
+<span class="o">uso=$(df -h / | tail -1 | awk '{print $5}' | tr -dc '0-9')</span>
+<span class="o">if [ "$uso" -gt 80 ]; then echo "ALERTA"; fi</span></div>
+  <p class="lede sm dim" style="margin-top:1.1em">Essa cadeia — <span class="hl">gerar, cortar, limpar, comparar</span> — é o padrão de praticamente todo script de monitoramento.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./relatorio.sh</span></div>
+  <h2>Script 1 · Relatório do sistema</h2>
+  <div class="term compact"><span class="c">#!/bin/bash</span>
+<span class="g"># relatorio.sh — o info.sh da aula 4, crescido</span>
+
+<span class="o">linha() { printf "%-22s %s\n" "$1" "$2"; }</span>
+
+<span class="o">echo "=========================================="</span>
+<span class="o">echo " RELATÓRIO DO SISTEMA"</span>
+<span class="o">echo " $(date '+%d/%m/%Y às %H:%M')"</span>
+<span class="o">echo "=========================================="</span>
+
+<span class="o">linha "Usuário:"   "$(whoami)"</span>
+<span class="o">linha "Máquina:"   "$(hostname)"</span>
+<span class="o">linha "Diretório:" "$(pwd)"</span>
+<span class="o">linha "Ligada há:"  "$(uptime -p)"</span>
+<span class="o">linha "Núcleos:"   "$(nproc)"</span>
+<span class="o">linha "Memória:"   "$(free -h | awk 'NR==2{print $3\" de \"$2}')"</span>
+<span class="o">linha "Disco:"     "$(df -h / | tail -1 | awk '{print $3\" de \"$2\" (\"$5\")\"}')"</span>
+<span class="o">linha "Conectados:" "$(who | wc -l)"</span>
+<span class="o">echo "=========================================="</span></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./monitora.sh</span></div>
+  <h2>Script 2 · Monitoramento com alerta</h2>
+  <div class="term compact"><span class="c">#!/bin/bash</span>
+<span class="o">set -u</span>
+
+<span class="o">LOG="$HOME/monitor.log"</span>
+<span class="o">LIMITE_DISCO=80</span>
+<span class="o">LIMITE_MEM=90</span>
+
+<span class="o">log() { echo "[$(date '+%F %T')] $1" &gt;&gt; "$LOG"; }</span>
+
+<span class="o">disco=$(df -h / | tail -1 | awk '{print $5}' | tr -dc '0-9')</span>
+<span class="o">mem=$(free | awk 'NR==2{printf "%.0f", $3/$2*100}')</span>
+<span class="o">carga=$(cut -d' ' -f1 /proc/loadavg)</span>
+
+<span class="o">log "disco=${disco}% memoria=${mem}% carga=$carga"</span>
+
+<span class="o">if [ "$disco" -gt "$LIMITE_DISCO" ]; then</span>
+<span class="o">    log "ALERTA: disco acima de ${LIMITE_DISCO}%"</span>
+<span class="o">    du -sh "$HOME"/* 2&gt;/dev/null | sort -rh | head -5 &gt;&gt; "$LOG"</span>
+<span class="o">fi</span>
+
+<span class="o">if [ "$mem" -gt "$LIMITE_MEM" ]; then</span>
+<span class="o">    log "ALERTA: memória acima de ${LIMITE_MEM}%"</span>
+<span class="o">fi</span></div>
+  <p class="lede sm" style="margin-top:1.1em">Repare: quando o disco passa do limite, ele <span class="hl">já registra os cinco maiores culpados</span>. Script bom não só avisa — adianta a investigação.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./backup.sh</span></div>
+  <h2>Script 3 · Backup</h2>
+  <div class="term compact"><span class="c">#!/bin/bash</span>
+<span class="o">set -u</span>
+
+<span class="o">ORIGEM="$HOME/scripts"</span>
+<span class="o">DESTINO="$HOME/backups"</span>
+<span class="o">DATA=$(date +%Y%m%d_%H%M%S)</span>
+<span class="o">LOG="$HOME/backup.log"</span>
+
+<span class="o">log() { echo "[$(date '+%F %T')] $1" | tee -a "$LOG"; }</span>
+
+<span class="o">if [ ! -d "$ORIGEM" ]; then</span>
+<span class="o">    log "ERRO: origem $ORIGEM não existe"</span>
+<span class="o">    exit 1</span>
+<span class="o">fi</span>
+
+<span class="o">mkdir -p "$DESTINO"</span>
+
+<span class="o">log "Iniciando backup de $ORIGEM"</span>
+<span class="o">if tar -czf "$DESTINO/backup_$DATA.tar.gz" -C "$HOME" scripts; then</span>
+<span class="o">    tamanho=$(du -h "$DESTINO/backup_$DATA.tar.gz" | cut -f1)</span>
+<span class="o">    log "Concluído: backup_$DATA.tar.gz ($tamanho)"</span>
+<span class="o">else</span>
+<span class="o">    log "ERRO: falha ao compactar"</span>
+<span class="o">    exit 2</span>
+<span class="o">fi</span>
+
+<span class="g"># mantém só os 5 mais recentes</span>
+<span class="o">ls -t "$DESTINO"/backup_*.tar.gz | tail -n +6 | xargs -r rm --</span>
+<span class="o">log "Limpeza concluída"</span></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">tar -czf / tar -xzf</span></div>
+  <h2>Compactando e restaurando</h2>
+  <div class="term"><span class="g"># criar arquivo compactado</span>
+<span class="c">tar -czf backup.tar.gz pasta/</span>
+<span class="g">#     │││</span>
+<span class="g">#     ││└─ f: nome do arquivo</span>
+<span class="g">#     │└── z: compacta com gzip</span>
+<span class="g">#     └─── c: criar</span>
+
+<span class="g"># ver o conteúdo SEM extrair</span>
+<span class="c">tar -tzf backup.tar.gz</span>
+
+<span class="g"># extrair</span>
+<span class="c">tar -xzf backup.tar.gz</span>
+<span class="g">#     └─── x: extrair</span>
+
+<span class="g"># extrair para outro lugar</span>
+<span class="c">tar -xzf backup.tar.gz -C /tmp/teste</span></div>
+  <div class="lab warn" style="margin-top:clamp(12px,2vh,20px)"><div class="lab-h">Backup que ninguém testou não é backup</div>
+    <p>A regra da profissão: <strong>sempre extraia e confira</strong> antes de confiar. Backup corrompido descoberto no dia do desastre é pior que não ter backup — porque você contava com ele.</p></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">tee -a arquivo.log</span></div>
+  <h2>Registrando o que aconteceu</h2>
+  <div class="term"><span class="g"># só no arquivo</span>
+<span class="o">echo "mensagem" &gt;&gt; log.txt</span>
+
+<span class="g"># na tela E no arquivo ao mesmo tempo</span>
+<span class="o">echo "mensagem" | tee -a log.txt</span>
+
+<span class="g"># a função de log que vale a pena copiar</span>
+<span class="o">log() {</span>
+<span class="o">    local nivel="$1"</span>
+<span class="o">    local msg="$2"</span>
+<span class="o">    echo "[$(date '+%F %T')] [$nivel] $msg" | tee -a "$LOG"</span>
+<span class="o">}</span>
+
+<span class="o">log INFO  "Processo iniciado"</span>
+<span class="o">log ERRO  "Arquivo não encontrado"</span>
+<span class="o">log AVISO "Disco em 85%"</span></div>
+  <div class="term" style="margin-top:clamp(10px,1.6vh,16px)"><span class="ok">[2026-10-19 20:14:02] [INFO] Processo iniciado</span>
+<span class="err">[2026-10-19 20:14:03] [ERRO] Arquivo não encontrado</span></div>
+  <p class="lede sm dim" style="margin-top:1.1em">Data, nível e mensagem. É o formato que você vai reencontrar em novembro, quando o log do sistema entrar na conversa.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./pratica.sh</span></div>
+  <h2>Mão na massa</h2>
+  <div class="lab"><div class="lab-h">Roteiro do laboratório</div>
+    <ul class="rules tight" style="margin-top:0">
+      <li><span class="n">01</span><span>Implemente o <code>relatorio.sh</code> e acrescente duas informações à sua escolha.</span></li>
+      <li><span class="n">02</span><span>Monte a cadeia que extrai só o número do uso de disco e teste no <code>if</code>.</span></li>
+      <li><span class="n">03</span><span>Implemente o <code>monitora.sh</code>, baixe o limite para 1% e confirme o alerta no log.</span></li>
+      <li><span class="n">04</span><span>Implemente o <code>backup.sh</code> e execute.</span></li>
+      <li><span class="n">05</span><span><strong>Teste o backup:</strong> extraia em <code>/tmp</code> e confirme que os arquivos estão íntegros.</span></li>
+      <li><span class="n">06</span><span>Rode o backup seis vezes e verifique se a limpeza manteve só os cinco mais recentes.</span></li>
+    </ul></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">exit</span><span class="caret"></span></div>
+  <h2>Fim do Módulo de Shell Script</h2>
+  <p class="lede">Seis aulas, do primeiro <code>echo</code> até scripts de administração completos.</p>
+  <p class="lede">Na <span class="hl-v">Aula 10</span> vem a peça que falta para colocar isso tudo em produção: <strong>permissões</strong>. Quem pode executar o quê, e por quê o seu script vai falhar quando outro usuário rodar.</p>
+  <div class="cover-meta"><div>Prof. <b>Thiago Lopes</b></div><div><b>thiagolopesdev.com.br</b></div><div>Próxima · <b>26.10</b></div></div>
+</div></section>
+
+</main>
+<script src="assets/deck.js"></script>
+</body>
+</html>

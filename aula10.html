@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 10 — Permissões | Sistemas Operacionais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/deck.css">
+</head>
+<body data-aula="10" data-total="17">
+<main class="deck">
+
+<section class="slide on"><div class="wrap">
+  <div class="modtag" style="color:var(--violet);border-color:rgba(155,140,232,.3)">Módulo 03 · Permissões e Automação</div>
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">chmod 750 script.sh</span><span class="caret"></span></div>
+  <h1>Permissões</h1>
+  <div class="rule-amber" style="background:var(--violet)"></div>
+  <div class="cover-meta"><div>Aula <b>10</b></div><div><b>26.10.2026</b></div><div>Prof. Thiago Lopes</div></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./meuscript.sh</span></div>
+  <p class="big-q">Você digitou<br><em>chmod +x</em><br>em toda aula<br>sem saber por quê.<br>Hoje a gente entende.</p>
+  <p class="lede dim" style="margin-top:1.6em">E, mais importante: por que o seu script vai falhar quando outra pessoa rodar — que é exatamente o que vai acontecer em novembro.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">id; cat /etc/passwd | head -3</span></div>
+  <h2>Usuários e grupos</h2>
+  <p class="lede">O sistema não conhece pessoas — conhece <span class="hl-v">números</span>. UID identifica o usuário, GID identifica o grupo. Nome é conveniência nossa.</p>
+  <div class="term"><span class="p">$</span> <span class="c">id</span>
+<span class="o">uid=1000(thiago) gid=1000(thiago) grupos=1000(thiago),27(sudo)</span>
+
+<span class="p">$</span> <span class="c">grep $(whoami) /etc/passwd</span>
+<span class="o">thiago:x:1000:1000::/home/thiago:/bin/bash</span>
+<span class="g">  nome  ↑  uid  gid      home        shell</span>
+
+<span class="g"># todos os grupos da máquina</span>
+<span class="p">$</span> <span class="c">cut -d: -f1 /etc/group | sort</span></div>
+  <p class="lede sm dim" style="margin-top:1.1em">O <code>x</code> na segunda posição significa que a senha não está aqui — está em <code>/etc/shadow</code>, que só o root lê. Tente <code>cat /etc/shadow</code> e veja o que acontece.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">ls -l script.sh</span></div>
+  <h2>Lendo os dez caracteres</h2>
+  <div class="term" style="font-size:clamp(12px,1.7vw,20px)"><span class="o">-rwxr-xr--  1 </span><span class="ok">thiago</span><span class="o"> </span><span class="p">devs</span><span class="o">  2048 out 26 backup.sh</span>
+<span class="g">│└┬┘└┬┘└┬┘      │       │</span>
+<span class="g">│ │  │  └─ outros      └─ grupo dono</span>
+<span class="g">│ │  └──── grupo   └──── usuário dono</span>
+<span class="g">│ └─────── dono</span>
+<span class="g">└───────── tipo</span></div>
+  <div class="grid g2" style="margin-top:clamp(14px,2.4vh,24px)">
+    <div class="card violet"><h3>Primeiro caractere</h3><p><code>-</code> arquivo comum · <code>d</code> diretório · <code>l</code> link simbólico</p></div>
+    <div class="card"><h3>Três blocos de três</h3><p>Sempre nesta ordem: <strong>dono</strong>, <strong>grupo</strong>, <strong>outros</strong>. Cada bloco responde: ler, escrever, executar.</p></div>
+  </div>
+  <p class="lede sm" style="margin-top:1.2em">O sistema aplica <span class="hl">o primeiro bloco que combina</span>. Se você é o dono, valem as permissões de dono — mesmo que "outros" tenha mais direitos.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">chmod 750 arquivo</span></div>
+  <h2>A notação octal</h2>
+  <div class="grid g3">
+    <div class="card violet"><h3>r = 4</h3><p>Ler o arquivo, ou <strong>listar</strong> o diretório.</p></div>
+    <div class="card teal"><h3>w = 2</h3><p>Alterar o arquivo, ou <strong>criar e apagar</strong> dentro do diretório.</p></div>
+    <div class="card blue"><h3>x = 1</h3><p><strong>Executar</strong> o script, ou <strong>entrar</strong> no diretório.</p></div>
+  </div>
+  <table class="ps keep" style="margin-top:clamp(14px,2.4vh,24px)"><thead><tr><th>Octal</th><th>Simbólico</th><th>Para quê</th></tr></thead><tbody>
+    <tr><td>755</td><td>rwxr-xr-x</td><td>Script que todos podem executar.</td></tr>
+    <tr><td>750</td><td>rwxr-x---</td><td>Script da equipe. Fora do grupo, ninguém toca.</td></tr>
+    <tr><td>644</td><td>rw-r--r--</td><td>Arquivo de texto comum. <span class="hl-r">Script assim não roda.</span></td></tr>
+    <tr><td>600</td><td>rw-------</td><td>Segredos: senhas, chaves, credenciais.</td></tr>
+    <tr><td>777</td><td>rwxrwxrwx</td><td><span class="hl-r">Nunca.</span> Isso é render-se, não configurar.</td></tr>
+  </tbody></table>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">chmod u+x / chmod 755</span></div>
+  <h2>chmod — as duas notações</h2>
+  <div class="term"><span class="g"># octal: define TUDO de uma vez</span>
+<span class="c">chmod 755 backup.sh</span>
+<span class="c">chmod 600 .credenciais</span>
+
+<span class="g"># simbólica: altera SÓ o que você indicar</span>
+<span class="c">chmod u+x backup.sh</span>      <span class="g"># dá execução ao dono</span>
+<span class="c">chmod g-w relatorio.txt</span>  <span class="g"># tira escrita do grupo</span>
+<span class="c">chmod o= segredo.txt</span>     <span class="g"># zera para outros</span>
+<span class="c">chmod a+r publico.txt</span>    <span class="g"># leitura para todos</span>
+
+<span class="g"># recursivo — aplica em tudo abaixo</span>
+<span class="c">chmod -R 750 ~/scripts</span>
+
+<span class="g"># todos os .sh de uma vez</span>
+<span class="c">chmod +x *.sh</span></div>
+  <p class="lede sm dim" style="margin-top:1.1em">Destino: <code>u</code> dono, <code>g</code> grupo, <code>o</code> outros, <code>a</code> todos. Operador: <code>+</code> adiciona, <code>-</code> remove, <code>=</code> define exatamente.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">sudo chown usuario:grupo arquivo</span></div>
+  <h2>chown — mudando o dono</h2>
+  <div class="term"><span class="g"># ver os grupos disponíveis</span>
+<span class="c">cat /etc/group</span>
+<span class="c">cut -d: -f1 /etc/group | sort</span>
+
+<span class="g"># mudar dono e grupo</span>
+<span class="c">sudo chown servidor:servidor estudo</span>
+
+<span class="g"># só o dono</span>
+<span class="c">sudo chown appuser arquivo.txt</span>
+
+<span class="g"># só o grupo</span>
+<span class="c">sudo chgrp devs arquivo.txt</span>
+
+<span class="g"># recursivo — o padrão de deploy</span>
+<span class="c">sudo chown -R appuser:appuser /opt/projeto</span></div>
+  <p class="lede sm" style="margin-top:1.1em">Mudar o dono exige <code>sudo</code>, e há um motivo lógico: se você pudesse dar um arquivo seu para outro usuário, poderia <span class="hl">plantar arquivo no nome dele</span>. Só o administrador transfere propriedade.</p>
+  <p class="lede sm dim">Aquela última linha volta na Aula 14. Guarde.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./teste-permissoes.sh</span></div>
+  <h2>Laboratório · sentindo na pele</h2>
+  <div class="term compact"><span class="g"># 1. crie um script e tente rodar sem permissão</span>
+<span class="p">$</span> <span class="c">echo '#!/bin/bash' &gt; teste.sh</span>
+<span class="p">$</span> <span class="c">echo 'echo "funcionou"' &gt;&gt; teste.sh</span>
+<span class="p">$</span> <span class="c">./teste.sh</span>
+<span class="err">bash: ./teste.sh: Permissão negada</span>
+
+<span class="p">$</span> <span class="c">ls -l teste.sh</span>
+<span class="o">-rw-r--r--  ← falta o x</span>
+
+<span class="p">$</span> <span class="c">chmod +x teste.sh &amp;&amp; ./teste.sh</span>
+<span class="ok">funcionou</span>
+
+<span class="g"># 2. agora crie outro usuário e teste como ele</span>
+<span class="p">$</span> <span class="c">sudo adduser teste</span>
+<span class="p">$</span> <span class="c">chmod 700 teste.sh</span>
+<span class="p">$</span> <span class="c">sudo -u teste ./teste.sh</span>
+<span class="err">Permissão negada</span>       <span class="g"># 700 = só o dono</span>
+
+<span class="p">$</span> <span class="c">chmod 755 teste.sh</span>
+<span class="p">$</span> <span class="c">sudo -u teste ./teste.sh</span>
+<span class="ok">funcionou</span></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">umask</span></div>
+  <h2>Por que o script nasce sem x</h2>
+  <p class="lede">Todo arquivo novo recebe uma permissão padrão. A <span class="hl-v">umask</span> é a máscara que <strong>subtrai</strong> desse padrão.</p>
+  <div class="term"><span class="p">$</span> <span class="c">umask</span>
+<span class="o">0022</span>
+<span class="g"># arquivos:   666 - 022 = 644  ← sem x, nunca</span>
+<span class="g"># diretórios: 777 - 022 = 755</span>
+
+<span class="p">$</span> <span class="c">touch novo.sh &amp;&amp; ls -l novo.sh</span>
+<span class="o">-rw-r--r--</span>
+
+<span class="g"># mais restritivo: nada para grupo e outros</span>
+<span class="p">$</span> <span class="c">umask 077 &amp;&amp; touch privado.txt &amp;&amp; ls -l privado.txt</span>
+<span class="ok">-rw-------</span></div>
+  <p class="lede sm" style="margin-top:1.1em">Aí está a resposta: arquivos <span class="hl">nunca nascem executáveis</span>, por segurança. Se nascessem, qualquer coisa baixada da internet chegaria pronta para rodar.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./cenario.sh</span></div>
+  <h2>Cenário: a aplicação que não grava</h2>
+  <div class="term compact"><span class="g"># o app roda como "appuser" e precisa escrever no banco</span>
+<span class="p">root@servidor</span><span class="g">:~#</span> <span class="c">ls -l /opt/projeto/</span>
+<span class="o">-rw-r--r-- 1 root root  8192 nov 23 dados.db</span>
+<span class="o">-rw-r--r-- 1 root root  4096 nov 23 app.js</span>
+
+<span class="err">Error: SQLITE_READONLY: attempt to write a readonly database</span>
+
+<span class="g"># Diagnóstico: dono é root, processo é appuser,</span>
+<span class="g"># e "outros" só tem leitura.</span>
+<span class="p">root@servidor</span><span class="g">:~#</span> <span class="c">chown -R appuser:appuser /opt/projeto</span>
+<span class="p">root@servidor</span><span class="g">:~#</span> <span class="c">chmod 750 /opt/projeto</span>
+<span class="p">root@servidor</span><span class="g">:~#</span> <span class="c">chmod 640 /opt/projeto/dados.db</span>
+<span class="ok">Funcionando</span></div>
+  <p class="lede sm" style="margin-top:1.1em">Esse erro exato vai acontecer com vocês em novembro, com o CRUD de vocês. <span class="hl">Fotografem este slide.</span></p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./pratica.sh</span></div>
+  <h2>Mão na massa</h2>
+  <div class="lab"><div class="lab-h">Roteiro do laboratório</div>
+    <ul class="rules tight" style="margin-top:0">
+      <li><span class="n">01</span><span>Crie um script, tente rodar sem <code>chmod</code> e anote o erro exato.</span></li>
+      <li><span class="n">02</span><span>Traduza para octal: <code>rwxr-x---</code>, <code>rw-rw-r--</code>, <code>r--------</code>.</span></li>
+      <li><span class="n">03</span><span>Traduza para simbólico: <code>644</code>, <code>700</code>, <code>755</code>.</span></li>
+      <li><span class="n">04</span><span>Crie um usuário de teste e reproduza o experimento com <code>700</code> e <code>755</code>.</span></li>
+      <li><span class="n">05</span><span>Crie uma pasta, tire o <code>x</code> e tente entrar. Depois tire só o <code>r</code> e tente listar. Qual a diferença?</span></li>
+      <li><span class="n">06</span><span>Escreva um script que percorra seus <code>.sh</code> e corrija a permissão dos que não estão executáveis.</span></li>
+    </ul></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">exit</span><span class="caret"></span></div>
+  <h2>Para a próxima</h2>
+  <p class="lede">Seus scripts rodam, e agora você sabe controlar quem pode executá-los.</p>
+  <p class="lede">Na <span class="hl-v">Aula 11</span> eles passam a rodar <strong>sem você</strong>: agendamento com <code>cron</code>, e o erro clássico que faz todo script agendado falhar.</p>
+  <div class="cover-meta"><div>Prof. <b>Thiago Lopes</b></div><div><b>thiagolopesdev.com.br</b></div><div>Próxima · <b>09.11</b> — após o feriado</div></div>
+</div></section>
+
+</main>
+<script src="assets/deck.js"></script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 07 — Laços e repetição | Sistemas Operacionais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/deck.css">
+</head>
+<body data-aula="07" data-total="17">
+<main class="deck">
+
+<section class="slide on"><div class="wrap">
+  <div class="modtag" style="color:var(--teal);border-color:rgba(79,201,176,.3)">Módulo 02 · Shell Script</div>
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">for i in *; do ...; done</span><span class="caret"></span></div>
+  <h1>Laços e<br>repetição</h1>
+  <div class="rule-amber" style="background:var(--teal)"></div>
+  <div class="cover-meta"><div>Aula <b>07</b></div><div><b>28.09.2026</b></div><div>Prof. Thiago Lopes</div></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">nano sequencia.sh</span></div>
+  <h2>O laço for</h2>
+  <div class="term"><span class="c">#!/bin/bash</span>
+
+<span class="o">echo "Testando o comando seq"</span>
+<span class="o">for i in $(seq 1 5 100);</span>
+<span class="o">do</span>
+<span class="o">    echo "$i"</span>
+<span class="o">done</span></div>
+  <div class="term" style="margin-top:clamp(10px,1.6vh,16px)"><span class="ok">1</span>
+<span class="ok">6</span>
+<span class="ok">11</span>
+<span class="ok">16</span>
+<span class="g">... até 96</span></div>
+  <p class="lede sm" style="margin-top:1.2em"><code>seq inicio passo fim</code>. Aqui: começa em 1, pula de 5 em 5, para antes de passar de 100. <span class="hl">Três números controlam o laço inteiro.</span></p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">for --formas</span></div>
+  <h2>As quatro formas de for</h2>
+  <div class="term"><span class="g"># 1. sobre uma lista escrita à mão</span>
+<span class="o">for cor in vermelho verde azul; do</span>
+<span class="o">    echo "Cor: $cor"</span>
+<span class="o">done</span>
+
+<span class="g"># 2. sobre os arquivos do diretório</span>
+<span class="o">for arquivo in *.sh; do</span>
+<span class="o">    echo "Encontrei: $arquivo"</span>
+<span class="o">done</span>
+
+<span class="g"># 3. faixa numérica direta</span>
+<span class="o">for i in {1..10}; do</span>
+<span class="o">    echo "Número $i"</span>
+<span class="o">done</span>
+
+<span class="g"># 4. estilo C, quando precisa de controle fino</span>
+<span class="o">for (( i=0; i&lt;5; i++ )); do</span>
+<span class="o">    echo "Índice $i"</span>
+<span class="o">done</span></div>
+  <p class="lede sm dim" style="margin-top:1.1em">A segunda é a mais usada no dia a dia: <span class="hl">processar todos os arquivos de uma pasta</span> é metade do trabalho de administração de sistema.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">bash sequencia2.sh | wc -l</span></div>
+  <h2>Quando o laço fica grande</h2>
+  <div class="term"><span class="c">#!/bin/bash</span>
+<span class="g"># sequencia2.sh</span>
+<span class="o">echo "Testando o comando seq"</span>
+<span class="o">for i in $(seq 1 10 10000000);</span>
+<span class="o">do</span>
+<span class="o">    echo "$i"</span>
+<span class="o">done</span></div>
+  <div class="term" style="margin-top:clamp(10px,1.6vh,16px)"><span class="g"># um milhão de linhas. Não jogue na tela — meça e conte.</span>
+<span class="p">$</span> <span class="c">time bash sequencia2.sh &gt; /dev/null</span>
+<span class="p">$</span> <span class="c">bash sequencia2.sh | wc -l</span>
+<span class="ok">1000000</span>
+
+<span class="g"># jogando na tela: interrompa com Ctrl+C</span>
+<span class="p">$</span> <span class="c">bash sequencia2.sh</span>
+<span class="err">^C</span></div>
+  <p class="lede sm" style="margin-top:1.1em">Repare no <code>&gt; /dev/null</code>: descarta a saída para medir só o processamento. E no <code>| wc -l</code>: conta em vez de mostrar. <span class="hl">Redirecionamento e pipe transformam o laço em ferramenta.</span></p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">x=1; for i in *; do mv $i $x; x=$((x+1)); done</span></div>
+  <h2>Dissecando um one-liner</h2>
+  <p class="lede sm">Renomeia todos os arquivos do diretório para números sequenciais. Cinco instruções em uma linha:</p>
+  <ul class="rules tight">
+    <li><span class="n">01</span><span><code>x=1</code> — inicializa o contador. O <code>;</code> separa as instruções.</span></li>
+    <li><span class="n">02</span><span><code>for i in *</code> — <code>i</code> recebe cada nome; <code>*</code> pega todos os arquivos.</span></li>
+    <li><span class="n">03</span><span><code>mv $i $x</code> — renomeia do nome atual para o número.</span></li>
+    <li><span class="n">04</span><span><code>x=$((x+1))</code> — incrementa para o próximo.</span></li>
+    <li><span class="n">05</span><span><code>done</code> — fecha o laço.</span></li>
+  </ul>
+  <div class="lab warn" style="margin-top:clamp(10px,1.8vh,18px)"><div class="lab-h">Regra de ouro: ensaie antes</div>
+    <p>Troque <code>mv</code> por <code>echo mv</code> e rode primeiro. Você <strong>vê</strong> exatamente o que aconteceria, sem que aconteça.</p>
+    <p>Faça isso sempre que o laço apagar ou renomear coisas. E sempre em pasta de teste — <span class="hl-r">nunca no seu home.</span></p></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">while [ condicao ]; do</span></div>
+  <h2>while e until</h2>
+  <div class="term"><span class="g"># while: repete ENQUANTO for verdadeiro</span>
+<span class="o">contador=1</span>
+<span class="o">while [ $contador -le 5 ]; do</span>
+<span class="o">    echo "Volta $contador"</span>
+<span class="o">    contador=$(( contador + 1 ))</span>
+<span class="o">done</span>
+
+<span class="g"># lendo um arquivo linha a linha — muito usado</span>
+<span class="o">while read -r linha; do</span>
+<span class="o">    echo "Li: $linha"</span>
+<span class="o">done &lt; lista.txt</span>
+
+<span class="g"># until: repete ATÉ se tornar verdadeiro</span>
+<span class="o">until ping -c1 8.8.8.8 &gt; /dev/null 2&gt;&amp;1; do</span>
+<span class="o">    echo "Aguardando a rede..."</span>
+<span class="o">    sleep 3</span>
+<span class="o">done</span>
+<span class="o">echo "Conectado!"</span></div>
+  <p class="lede sm dim" style="margin-top:1.1em">O <code>while</code> com <code>read</code> é o padrão para processar arquivos de texto: uma linha por vez, sem carregar tudo na memória.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">break / continue</span></div>
+  <h2>Controlando o laço por dentro</h2>
+  <div class="term"><span class="g"># break: sai do laço imediatamente</span>
+<span class="o">for arquivo in *.log; do</span>
+<span class="o">    if [ ! -r "$arquivo" ]; then</span>
+<span class="o">        echo "Sem permissão em $arquivo. Parando."</span>
+<span class="o">        break</span>
+<span class="o">    fi</span>
+<span class="o">    echo "Processando $arquivo"</span>
+<span class="o">done</span>
+
+<span class="g"># continue: pula para a próxima volta</span>
+<span class="o">for arquivo in *; do</span>
+<span class="o">    if [ -d "$arquivo" ]; then</span>
+<span class="o">        continue</span>            <span class="g"># ignora diretórios</span>
+<span class="o">    fi</span>
+<span class="o">    echo "Arquivo: $arquivo"</span>
+<span class="o">done</span></div>
+  <div class="lab warn" style="margin-top:clamp(12px,2vh,20px)"><div class="lab-h">O laço que nunca termina</div>
+    <p><code>while true; do :; done</code> roda para sempre e consome 100% de um núcleo. Se acontecer sem querer: <code>Ctrl+C</code>. Se estiver em segundo plano: <code>ps</code> para achar o PID e <code>kill PID</code> para encerrar.</p></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./organiza.sh</span></div>
+  <h2>Laço fazendo trabalho de verdade</h2>
+  <div class="term compact"><span class="c">#!/bin/bash</span>
+<span class="g"># organiza.sh — separa arquivos por extensão</span>
+
+<span class="o">for arquivo in *; do</span>
+<span class="o">    [ -d "$arquivo" ] &amp;&amp; continue</span>      <span class="g"># pula pastas</span>
+
+<span class="o">    extensao="${arquivo##*.}"</span>            <span class="g"># o que vem depois do ponto</span>
+
+<span class="o">    if [ "$extensao" = "$arquivo" ]; then</span>
+<span class="o">        extensao="sem_extensao"</span>
+<span class="o">    fi</span>
+
+<span class="o">    mkdir -p "$extensao"</span>
+<span class="o">    mv "$arquivo" "$extensao/"</span>
+<span class="o">    echo "$arquivo → $extensao/"</span>
+<span class="o">done</span></div>
+  <p class="lede sm" style="margin-top:1.1em">Trinta segundos de script substituem meia hora de arrastar arquivo. <span class="hl">É esse o retorno de aprender laço.</span></p>
+  <p class="lede sm dim">Teste numa pasta com cópias antes de usar de verdade — e coloque <code>echo</code> antes do <code>mv</code> no primeiro ensaio.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./pratica.sh</span></div>
+  <h2>Mão na massa</h2>
+  <div class="lab"><div class="lab-h">Roteiro do laboratório</div>
+    <ul class="rules tight" style="margin-top:0">
+      <li><span class="n">01</span><span>Escreva o <code>sequencia.sh</code> e altere o passo para ver o efeito.</span></li>
+      <li><span class="n">02</span><span>Rode o <code>sequencia2.sh</code> medindo o tempo e contando as linhas, sem jogar na tela.</span></li>
+      <li><span class="n">03</span><span>Crie uma pasta de teste com 10 arquivos e renomeie todos com o one-liner. <strong>Ensaie com <code>echo</code> antes.</strong></span></li>
+      <li><span class="n">04</span><span>Escreva um laço que percorra os seus <code>.sh</code> e mostre quais não têm permissão de execução.</span></li>
+      <li><span class="n">05</span><span>Implemente o <code>organiza.sh</code> e teste numa pasta com cópias.</span></li>
+      <li><span class="n">06</span><span>Faça uma tabuada de 1 a 10 usando dois laços aninhados, formatada com <code>printf</code>.</span></li>
+    </ul></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">exit</span><span class="caret"></span></div>
+  <h2>Para a próxima</h2>
+  <p class="lede">Seus scripts estão ficando longos — e com trechos repetidos.</p>
+  <p class="lede">Na <span class="hl-t">Aula 08</span> entram <strong>funções e arrays</strong>: como organizar o código para que ele continue legível quando passar de cem linhas.</p>
+  <div class="cover-meta"><div>Prof. <b>Thiago Lopes</b></div><div><b>thiagolopesdev.com.br</b></div><div>Próxima · <b>05.10</b></div></div>
+</div></section>
+
+</main>
+<script src="assets/deck.js"></script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 08 — Funções e arrays | Sistemas Operacionais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/deck.css">
+</head>
+<body data-aula="08" data-total="17">
+<main class="deck">
+
+<section class="slide on"><div class="wrap">
+  <div class="modtag" style="color:var(--teal);border-color:rgba(79,201,176,.3)">Módulo 02 · Shell Script</div>
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">funcao() { ... }</span><span class="caret"></span></div>
+  <h1>Funções<br>e arrays</h1>
+  <div class="rule-amber" style="background:var(--teal)"></div>
+  <div class="cover-meta"><div>Aula <b>08</b></div><div><b>05.10.2026</b></div><div>Prof. Thiago Lopes</div></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">echo $O_PROBLEMA</span></div>
+  <p class="big-q">Seu script passou<br>de cem linhas.<br>Tem o mesmo trecho<br>repetido <em>quatro vezes.</em></p>
+  <p class="lede" style="margin-top:1.6em">Quando precisar mudar aquele trecho, você vai mudar em quatro lugares — e esquecer um. <span class="hl">É assim que bug nasce.</span></p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">nome_da_funcao() { }</span></div>
+  <h2>Funções</h2>
+  <div class="term"><span class="c">#!/bin/bash</span>
+
+<span class="g"># definindo</span>
+<span class="o">saudacao() {</span>
+<span class="o">    echo "Olá, $1! Hoje é $(date '+%d/%m')."</span>
+<span class="o">}</span>
+
+<span class="g"># chamando — como se fosse um comando</span>
+<span class="o">saudacao "Thiago"</span>
+<span class="o">saudacao "Maria"</span></div>
+  <div class="grid g2" style="margin-top:clamp(12px,2vh,20px)">
+    <div class="card teal"><h3>Argumentos</h3><p>Dentro da função, <code>$1</code>, <code>$2</code>, <code>$#</code> se referem aos argumentos <strong>dela</strong>, não aos do script.</p></div>
+    <div class="card"><h3>Ordem importa</h3><p>A função precisa ser definida <strong>antes</strong> de ser chamada. Por isso elas ficam no topo do arquivo.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">local variavel="valor"</span></div>
+  <h2>A palavra local</h2>
+  <div class="term"><span class="g"># SEM local — a variável vaza para fora</span>
+<span class="o">nome="Thiago"</span>
+<span class="o">trocar() {</span>
+<span class="o">    nome="Outro"</span>
+<span class="o">}</span>
+<span class="o">trocar</span>
+<span class="o">echo $nome</span>
+<span class="err">Outro</span>          <span class="g">← a função sobrescreveu sua variável</span>
+
+<span class="g"># COM local — fica contida</span>
+<span class="o">nome="Thiago"</span>
+<span class="o">trocar() {</span>
+<span class="o">    local nome="Outro"</span>
+<span class="o">}</span>
+<span class="o">trocar</span>
+<span class="o">echo $nome</span>
+<span class="ok">Thiago</span>         <span class="g">← intacta</span></div>
+  <p class="lede sm" style="margin-top:1.1em">Em shell, <span class="hl-r">toda variável é global por padrão</span> — o contrário da maioria das linguagens. Sem <code>local</code>, uma função pode destruir dados de outra parte do script sem avisar. <span class="hl">Use sempre.</span></p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">return 0 / echo resultado</span></div>
+  <h2>Devolvendo valores</h2>
+  <div class="term"><span class="g"># return devolve CÓDIGO DE SAÍDA, não valor</span>
+<span class="o">arquivo_existe() {</span>
+<span class="o">    if [ -f "$1" ]; then</span>
+<span class="o">        return 0</span>          <span class="g"># sucesso</span>
+<span class="o">    else</span>
+<span class="o">        return 1</span>          <span class="g"># falha</span>
+<span class="o">    fi</span>
+<span class="o">}</span>
+
+<span class="o">if arquivo_existe "dados.txt"; then</span>
+<span class="o">    echo "Encontrado"</span>
+<span class="o">fi</span>
+
+<span class="g"># para devolver um VALOR, use echo e capture com $( )</span>
+<span class="o">soma() {</span>
+<span class="o">    echo $(( $1 + $2 ))</span>
+<span class="o">}</span>
+
+<span class="o">resultado=$(soma 10 5)</span>
+<span class="o">echo "Total: $resultado"</span>
+<span class="ok">Total: 15</span></div>
+  <p class="lede sm dim" style="margin-top:1.1em">Diferença que confunde quem vem de outras linguagens: <code>return</code> em shell só aceita 0 a 255 e serve para dizer "deu certo ou não". Valor de verdade sai pelo <code>echo</code>.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">mundo[0]="Shell Script"</span></div>
+  <h2>Arrays</h2>
+  <div class="term"><span class="g"># declaração por índice</span>
+<span class="o">mundo[0]="Shell Script"</span>
+<span class="o">mundo[1]="Bash"</span>
+<span class="o">mundo[2]="GNU"</span>
+<span class="o">mundo[3]="Linux"</span>
+<span class="o">mundo[4]="Debian"</span>
+
+<span class="g"># forma compacta</span>
+<span class="o">frutas=("maçã" "banana" "uva")</span>
+
+<span class="g"># acesso</span>
+<span class="o">echo ${mundo[3]}</span>        <span class="g"># Linux</span>
+<span class="o">echo ${mundo[@]}</span>        <span class="g"># todos os elementos</span>
+<span class="o">echo ${#mundo[@]}</span>       <span class="g"># quantos são: 5</span>
+<span class="o">echo ${!mundo[@]}</span>       <span class="g"># os índices: 0 1 2 3 4</span>
+
+<span class="g"># adicionando ao final</span>
+<span class="o">mundo+=("Ubuntu")</span></div>
+  <p class="lede sm dim" style="margin-top:1.1em">Índices começam em <strong>zero</strong>, como na maioria das linguagens. E as chaves <code>${ }</code> são obrigatórias — <code>$mundo[3]</code> sem elas não funciona.</p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">for x in "${lista[@]}"</span></div>
+  <h2>Percorrendo arrays</h2>
+  <div class="term"><span class="o">servicos=("nginx" "mysql" "node")</span>
+
+<span class="g"># pelos valores</span>
+<span class="o">for s in "${servicos[@]}"; do</span>
+<span class="o">    echo "Verificando $s..."</span>
+<span class="o">done</span>
+
+<span class="g"># pelos índices, quando a posição importa</span>
+<span class="o">for i in "${!servicos[@]}"; do</span>
+<span class="o">    echo "$i: ${servicos[$i]}"</span>
+<span class="o">done</span>
+
+<span class="g"># montando o array a partir de um comando</span>
+<span class="o">arquivos=( $(ls *.sh) )</span>
+<span class="o">echo "Há ${#arquivos[@]} scripts aqui"</span></div>
+  <div class="lab warn" style="margin-top:clamp(12px,2vh,20px)"><div class="lab-h">As aspas em <code>"${lista[@]}"</code></div>
+    <p>Sem elas, um item com espaço no nome vira dois itens. <code>"Nota Fiscal.pdf"</code> vira <code>Nota</code> e <code>Fiscal.pdf</code> — e o script processa arquivos que não existem.</p></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">cat menu.sh</span></div>
+  <h2>Juntando tudo · um menu</h2>
+  <div class="term compact"><span class="c">#!/bin/bash</span>
+
+<span class="o">log()  { echo "[$(date '+%H:%M:%S')] $1"; }</span>
+
+<span class="o">listar() {</span>
+<span class="o">    local total=$(ls -1 | wc -l)</span>
+<span class="o">    log "Há $total itens em $(pwd)"</span>
+<span class="o">    ls -lh</span>
+<span class="o">}</span>
+
+<span class="o">espaco() {</span>
+<span class="o">    log "Uso de disco:"</span>
+<span class="o">    df -h / | tail -1</span>
+<span class="o">}</span>
+
+<span class="o">while true; do</span>
+<span class="o">    echo ""</span>
+<span class="o">    echo "1) Listar arquivos  2) Espaço em disco  3) Sair"</span>
+<span class="o">    read -p "Opção: " op</span>
+<span class="o">    case "$op" in</span>
+<span class="o">        1) listar ;;</span>
+<span class="o">        2) espaco ;;</span>
+<span class="o">        3) log "Saindo."; exit 0 ;;</span>
+<span class="o">        *) echo "Opção inválida" ;;</span>
+<span class="o">    esac</span>
+<span class="o">done</span></div>
+  <p class="lede sm" style="margin-top:1.1em">Funções, <code>case</code>, <code>while</code>, <code>local</code>, <code>read</code> — <span class="hl">cinco aulas em vinte linhas.</span></p>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">./pratica.sh</span></div>
+  <h2>Mão na massa</h2>
+  <div class="lab"><div class="lab-h">Roteiro do laboratório</div>
+    <ul class="rules tight" style="margin-top:0">
+      <li><span class="n">01</span><span>Escreva uma função <code>log()</code> que carimbe data e hora, e use nos seus scripts antigos.</span></li>
+      <li><span class="n">02</span><span>Demonstre o efeito do <code>local</code>: crie o mesmo exemplo com e sem, e compare.</span></li>
+      <li><span class="n">03</span><span>Função que recebe dois números e devolve a soma — capturada com <code>$( )</code>.</span></li>
+      <li><span class="n">04</span><span>Crie um array com cinco nomes e percorra pelos valores e pelos índices.</span></li>
+      <li><span class="n">05</span><span>Monte um array a partir de <code>ls</code> e mostre quantos itens tem.</span></li>
+      <li><span class="n">06</span><span>Implemente o <code>menu.sh</code> e acrescente uma quarta opção à sua escolha.</span></li>
+    </ul></div>
+</div></section>
+
+<section class="slide"><div class="wrap">
+  <div class="prompt"><span class="usr">aluno@linux</span><span class="sym">:~$</span> <span class="cmd">exit</span><span class="caret"></span></div>
+  <h2>Para a próxima</h2>
+  <p class="lede">Você tem todas as peças: variáveis, condições, laços, funções e arrays.</p>
+  <p class="lede">Na <span class="hl-t">Aula 09</span> a gente monta com elas os scripts que <strong>administradores de verdade usam</strong>: monitoramento, backup e relatório de sistema.</p>
+  <div class="cover-meta"><div>Prof. <b>Thiago Lopes</b></div><div><b>thiagolopesdev.com.br</b></div><div>Próxima · <b>19.10</b> — após o feriado</div></div>
+</div></section>
+
+</main>
+<script src="assets/deck.js"></script>
+</body>
+</html>
